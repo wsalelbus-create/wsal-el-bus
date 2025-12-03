@@ -1,15 +1,18 @@
 const CACHE_NAME = 'wsal-el-bus-v1';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/leaflet.css',
-    '/leaflet.js',
-    '/images/icon16.png',
-    '/images/icon48.png',
-    '/images/icon128.png',
-    '/images/station_placeholder.png'
+    './',
+    './index.html',
+    './styles.css',
+    './pwa-mobile.css',
+    './station-modal.css',
+    './version-footer.css',
+    './app.js',
+    './leaflet.css',
+    './leaflet.js',
+    './images/icon16.png',
+    './images/icon48.png',
+    './images/icon128.png',
+    './images/station_placeholder.png'
 ];
 
 // Install event - cache resources

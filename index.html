@@ -17,6 +17,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="pwa-mobile.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="leaflet.css" />
@@ -132,19 +133,20 @@
                     });
             });
         }
- // Install prompt handling
+
+        // Install prompt handling
         let deferredPrompt;
         const installPrompt = document.getElementById('install-prompt');
         const installBtn = document.getElementById('install-btn');
         const dismissBtn = document.getElementById('dismiss-btn');
 
-       addEventListener('beforeinstallprompt', (e) => {
+        window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installPrompt.classList.remove('hidden');
         });
 
-        installventListener('click', async () => {
+        installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
@@ -154,7 +156,7 @@
             }
         });
 
-        dismissBtn.addEener('click', () => {
+        dismissBtn.addEventListener('click', () => {
             installPrompt.classList.add('hidden');
         });
     </script>

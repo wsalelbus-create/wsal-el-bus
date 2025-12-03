@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Live bus tracker for ETUSA Algiers with real-time countdowns">
+    <meta name="theme-color" content="#00d2ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="وصل الباص">
+
+    <title>وصل الباص - Wsal El Bus</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="leaflet.css" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icon16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="images/icon48.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="images/icon128.png">
+    <link rel="apple-touch-icon" href="images/icon128.png">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="logo-area">
+                <h1 class="arabic-title">وصل الباص</h1>
+                <span class="live-badge">LIVE</span>
+            </div>
+            <div class="time-display" id="algiers-time">--:--</div>
+        </header>
+
+        <main>
+            <section class="station-card glass-panel">
+                <div class="slider-container">
+                    <!-- Slide 1: Station Image -->
+                    <div class="slide active" id="slide-image">
+                        <div class="station-image-container">
+                            <img src="images/station_placeholder.png" alt="Station" id="current-station-img"
+                                class="station-img">
+                            <div class="station-overlay">
+                                <h2 id="station-name">Loading Station...</h2>
+                                <p id="station-address" class="address"><span class="icon">📍</span> <span
+                                        id="addr-text">Locating...</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Map View -->
+                    <div class="slide" id="slide-map">
+                        <div id="map-container"></div>
+                        <div class="map-overlay">
+                            <h2 id="map-station-name">Loading...</h2>
+                            <p class="map-distance" id="map-distance">📍 Calculating distance...</p>
+                        </div>
+                    </div>
+
+                    <!-- Slider Navigation Dots -->
+                    <div class="slider-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="routes-container">
+                <!-- Walking Time Indicator -->
+                <div class="walking-time" id="walking-time">
+                    <span class="walk-icon">🚶</span>
+                    <span id="walk-time-text">Calculating...</span>
+                </div>
+
+                <h3>Next Arrivals</h3>
+                <div class="routes-list" id="routes-list">
+                    <!-- Route items will be injected here -->
+                    <div class="loading-spinner"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Station Selector Modal -->
+        <div id="station-modal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel">
+                <div class="modal-header">
+                    <h3>Select Station</h3>
+                    <button id="close-modal" class="close-btn">✕</button>
+                </div>
+                <input type="text" id="station-search" class="station-search" placeholder="Search stations...">
+                <div class="station-list" id="station-list">
+                    <!-- Station items will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="glass-footer">
+            <button id="btn-nearest" class="nav-btn active">Nearest</button>
+            <button id="btn-list" class="nav-btn">All Stations</button>
+        </footer>
+    </div>
+
+    <!-- Install Prompt (hidden by default) -->
+    <div id="install-prompt" class="install-prompt hidden">
+        <div class="install-content">
+            <p>📱 Install Wsal El Bus for quick access!</p>
+            <button id="install-btn" class="install-btn">Install</button>
+            <button id="dismiss-btn" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="leaflet.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+
+        // Install prompt handling
+        let deferredPrompt;
+        const installPrompt = document.getElementById('install-prompt');
+        const installBtn = document.getElementById('install-btn');
+        const dismissBtn = document.getElementById('dismiss-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installPrompt.classList.remove('hidden');
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                deferredPrompt = null;
+                installPrompt.classList.add('hidden');
+            }
+        });
+
+        dismissBtn.addEventListener('click', () => {
+            installPrompt.classList.add('hidden');
+        });
+    </script>
+</body>
+
+</html>

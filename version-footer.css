@@ -1,19 +1,46 @@
-/* Fix white background on overscroll (pull to refresh) */
+/* Aggressive fix for white background on overscroll */
 html {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    background: #1a1a2e !important;
+    background-color: #1a1a2e !important;
     overflow-x: hidden;
+    height: 100%;
 }
 
 body {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    background-color: #1a1a2e !important;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* Prevent white flash on iOS Safari */
 html,
 body {
     -webkit-overflow-scrolling: touch;
+}
+
+/* Extra layer to prevent white showing through */
+body::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
+    left: 0;
+    right: 0;
+    height: 200vh;
+    background: #1a1a2e;
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    right: 0;
+    height: 200vh;
+    background: #1a1a2e;
+    z-index: -1;
 }
 
 /* Version Footer Styling */

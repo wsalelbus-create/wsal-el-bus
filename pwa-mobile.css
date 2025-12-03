@@ -32,22 +32,38 @@ body {
     }
 }
 
-/* Install Prompt - Fixed position above footer */
+/* Install Prompt - Always visible on mobile */
 .install-prompt {
     position: fixed;
-    bottom: 80px;
+    bottom: 90px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
     max-width: 350px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(0, 102, 204, 0.2));
+    backdrop-filter: blur(15px);
+    border: 2px solid var(--primary-color);
     border-radius: 16px;
     padding: 15px 20px;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 8px 32px rgba(0, 210, 255, 0.3);
     z-index: 2000;
-    animation: slideUp 0.3s ease;
+    animation: slideUpBounce 0.5s ease;
+}
+
+@keyframes slideUpBounce {
+    0% {
+        transform: translateX(-50%) translateY(100px);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
 }
 
 .install-prompt.hidden {
@@ -65,42 +81,58 @@ body {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
+    color: #ffffff;
 }
 
 .install-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background: var(--primary-color);
     color: #000;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
+    font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
     white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
 }
 
-.install-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+.install-btn:active {
+    transform: scale(0.95);
 }
 
 .dismiss-btn {
-    background: none;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: var(--text-muted);
+    color: #ffffff;
     font-size: 1.2rem;
     cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
+    padding: 5px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
+    border-radius: 50%;
+    transition: all 0.2s;
 }
 
-.dismiss-btn:hover {
-    color: var(--text-main);
+.dismiss-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Show install prompt on mobile only */
+@media (max-width: 767px) {
+    .install-prompt:not(.hidden) {
+        display: block;
+    }
+}
+
+/* Hide on desktop */
+@media (min-width: 768px) {
+    .install-prompt {
+        display: none !important;
+    }
 }

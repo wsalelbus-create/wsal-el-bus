@@ -28,10 +28,10 @@ body {
     }
 }
 
-/* Install Prompt */
+/* Install Prompt - Fixed position above footer */
 .install-prompt {
     position: fixed;
-    bottom: 80px;
+    bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;

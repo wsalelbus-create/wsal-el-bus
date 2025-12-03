@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -132,20 +132,19 @@
                     });
             });
         }
-
-        // Install prompt handling
+ // Install prompt handling
         let deferredPrompt;
         const installPrompt = document.getElementById('install-prompt');
         const installBtn = document.getElementById('install-btn');
         const dismissBtn = document.getElementById('dismiss-btn');
 
-        window.addEventListener('beforeinstallprompt', (e) => {
+       addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installPrompt.classList.remove('hidden');
         });
 
-        installBtn.addEventListener('click', async () => {
+        installventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
@@ -155,7 +154,7 @@
             }
         });
 
-        dismissBtn.addEventListener('click', () => {
+        dismissBtn.addEener('click', () => {
             installPrompt.classList.add('hidden');
         });
     </script>

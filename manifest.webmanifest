@@ -36,7 +36,10 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["travel", "navigation"],
+  "categories": [
+    "travel",
+    "navigation"
+  ],
   "lang": "ar",
-  "dir": "rtl"
+  "dir": "ltr"
 }

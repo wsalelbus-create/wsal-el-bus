@@ -3,6 +3,7 @@
   "short_name": "وصل الباص",
   "description": "Live bus tracker for ETUSA Algiers with real-time countdowns and station info",
   "start_url": "./index.html",
+  "id": "/wsal-el-bus/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1a1a2e",

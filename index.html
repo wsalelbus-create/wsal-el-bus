@@ -152,7 +152,8 @@
         const dismissBtn = document.getElementById('dismiss-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
+            // Don't prevent default on mobile - let Chrome show "Install app" in menu
+            // e.preventDefault();  // Commented out to allow native Chrome install
             deferredPrompt = e;
             installPrompt.classList.remove('hidden');
         });

@@ -107,6 +107,116 @@ function getWeatherEmoji(condition) {
     };
     return emojis[condition] || '🌤️';
 }
+```javascript
+// Weather Module for Bus Arrival Predictions
+// Uses Open-Meteo API (free, no API key needed)
+
+const ALGIERS_LAT = 36.7538;
+const ALGIERS_LON = 3.0588;
+const WEATHER_API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${ALGIERS_LAT}&longitude=${ALGIERS_LON}&current_weather=true`;
+
+// Weather delay factors
+const WEATHER_DELAY_FACTORS = {
+    clear: 1.0,           // Normal conditions
+    partlyCloudy: 1.0,    // No impact
+    cloudy: 1.0,          // No impact
+    fog: 1.2,             // 20% slower
+    drizzle: 1.15,        // 15% slower
+    rain: 1.3,            // 30% slower
+    heavyRain: 1.5,       // 50% slower
+    thunderstorm: 1.6,    // 60% slower
+    snow: 1.7,            // 70% slower (rare in Algiers)
+    strongWind: 1.1       // 10% slower
+};
+
+// Current weather data (null until loaded)
+let currentWeather = {
+    condition: null,
+    temperature: null,
+    windSpeed: 0,
+    delayFactor: 1.0,
+    lastUpdate: null
+};
+
+// Fetch current weather
+async function fetchWeather() {
+    try {
+        // Add timestamp to prevent iOS PWA caching
+        const timestamp = new Date().getTime();
+        const url = `${WEATHER_API_URL}&t=${timestamp}`;
+
+        const response = await fetch(url, {
+            cache: 'no-store', // Prevent caching for iOS PWA
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
+        const data = await response.json();
+
+        const weather = data.current_weather;
+
+        // Determine weather condition from WMO code
+        const condition = getWeatherCondition(weather.weathercode);
+
+        // Calculate delay factor
+        let delayFactor = WEATHER_DELAY_FACTORS[condition] || 1.0;
+
+        // Add wind impact (if wind > 30 km/h)
+        if (weather.windspeed > 30) {
+            delayFactor *= WEATHER_DELAY_FACTORS.strongWind;
+        }
+
+        currentWeather = {
+            condition: condition,
+            temperature: weather.temperature,
+            windSpeed: weather.windspeed,
+            delayFactor: delayFactor,
+            lastUpdate: new Date()
+        };
+
+        console.log('🌤️ Weather updated:', currentWeather);
+        return currentWeather;
+
+    } catch (error) {
+        console.error('Weather fetch failed:', error);
+        // Fallback to normal conditions
+        return currentWeather;
+    }
+}
+
+// Convert WMO weather code to condition
+function getWeatherCondition(code) {
+    // WMO Weather interpretation codes
+    if (code === 0) return 'clear';
+    if (code === 1 || code === 2) return 'partlyCloudy';
+    if (code === 3) return 'cloudy';
+    if (code === 45 || code === 48) return 'fog';
+    if (code === 51 || code === 53 || code === 55) return 'drizzle';
+    if (code === 61 || code === 63) return 'rain';
+    if (code === 65 || code === 67) return 'heavyRain';
+    if (code >= 80 && code <= 82) return 'rain';
+    if (code === 95 || code === 96 || code === 99) return 'thunderstorm';
+    if (code >= 71 && code <= 77) return 'snow';
+
+    return 'clear'; // Default
+}
+
+// Get weather emoji for display
+function getWeatherEmoji(condition) {
+    const emojis = {
+        clear: '☀️',
+        partlyCloudy: '⛅',
+        cloudy: '☁️',
+        fog: '🌫️',
+        drizzle: '🌦️',
+        rain: '🌧️',
+        heavyRain: '⛈️',
+        thunderstorm: '⚡',
+        snow: '❄️',
+        strongWind: '💨'
+    };
+    return emojis[condition] || '🌤️';
+}
 
 // Get current weather delay factor
 function getWeatherDelayFactor() {
@@ -119,55 +229,21 @@ function getWeatherDisplay() {
         return '🌤️ ...'; // Loading
     }
     const emoji = getWeatherEmoji(currentWeather.condition);
-    const temp = Math.round(currentWeather.temperature);
-    return `${emoji} ${temp}°C`;
+    return `${emoji} ${Math.round(currentWeather.temperature)}°C`;
 }
 
-// Initialize weather (fetch on load and every 10 minutes)
+// Initialize weather module (fetch weather on load)
 async function initWeather() {
-    await fetchWeather(); // Wait for first fetch
-
-    // Update display immediately
-    const weatherDisplay = document.getElementById('weather-display');
-    if (weatherDisplay) {
-        weatherDisplay.textContent = getWeatherDisplay();
-    }
-
-    setInterval(async () => {
-        await fetchWeather();
-        if (weatherDisplay) {
-            weatherDisplay.textContent = getWeatherDisplay();
-        }
-    }, 10 * 60 * 1000); // Update every 10 minutes
-
-    // iOS PWA: Refresh when app comes to foreground
-    document.addEventListener('visibilitychange', async () => {
-        if (!document.hidden) {
-            console.log('App resumed - refreshing weather');
-            await fetchWeather();
-            if (weatherDisplay) {
-                weatherDisplay.textContent = getWeatherDisplay();
-            }
-        }
-    });
-
-    // iOS PWA: Refresh on page show (back from cache)
-    window.addEventListener('pageshow', async (event) => {
-        if (event.persisted) {
-            console.log('Page restored from cache - refreshing weather');
-            await fetchWeather();
-            if (weatherDisplay) {
-                weatherDisplay.textContent = getWeatherDisplay();
-            }
-        }
-    });
+    await fetchWeather();
+    // Refresh weather every 15 minutes
+    setInterval(fetchWeather, 15 * 60 * 1000);
 }
 
-// Export functions
+// Export functions (only for calculations, no display)
 window.WeatherModule = {
     init: initWeather,
     getDelayFactor: getWeatherDelayFactor,
-    getDisplay: getWeatherDisplay,
     getCurrentWeather: () => currentWeather,
-    refresh: fetchWeather // Allow manual refresh
+    refresh: fetchWeather // Allow manual refresh if needed
 };
+```

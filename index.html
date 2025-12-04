@@ -32,90 +32,6 @@
     <link rel="icon" type="image/png" sizes="192x192" href="./images/icon192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="./images/icon512.png">
     <link rel="apple-touch-icon" href="./images/icon192.png">
-    <!-- Inline Styles for Install Prompt (Guaranteed Visibility) -->
-    <style>
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            /* Moved to bottom for easier reach */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: #1a1a2e;
-            /* Solid dark background */
-            border: 2px solid #00d2ff;
-            /* Bright border */
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-            z-index: 999999;
-            /* Super high z-index */
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .install-prompt.hidden {
-            display: none !important;
-        }
-
-        .install-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-        }
-
-        .install-content p {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.4;
-        }
-
-        .install-actions {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .install-btn {
-            flex: 1;
-            padding: 12px;
-            background: #00d2ff;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .dismiss-btn {
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translate(-50%, 100px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -205,11 +121,9 @@
     <!-- Install Prompt (hidden by default) -->
     <div id="install-prompt" class="install-prompt hidden">
         <div class="install-content">
-            <p>📱 Install <strong>Wsal El Bus</strong> for a better experience!</p>
-        </div>
-        <div class="install-actions">
-            <button id="install-btn" class="install-btn">Install App</button>
-            <button id="dismiss-btn" class="dismiss-btn">Later</button>
+            <p>📱 Install Wsal El Bus for quick access!</p>
+            <button id="install-btn" class="install-btn">Install</button>
+            <button id="dismiss-btn" class="dismiss-btn">✕</button>
         </div>
     </div>
 

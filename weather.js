@@ -31,7 +31,16 @@ let currentWeather = {
 // Fetch current weather
 async function fetchWeather() {
     try {
-        const response = await fetch(WEATHER_API_URL);
+        // Add timestamp to prevent iOS PWA caching
+        const timestamp = new Date().getTime();
+        const url = `${WEATHER_API_URL}&t=${timestamp}`;
+
+        const response = await fetch(url, {
+            cache: 'no-store', // Prevent caching for iOS PWA
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
         const data = await response.json();
 
         const weather = data.current_weather;
@@ -130,6 +139,28 @@ async function initWeather() {
             weatherDisplay.textContent = getWeatherDisplay();
         }
     }, 10 * 60 * 1000); // Update every 10 minutes
+
+    // iOS PWA: Refresh when app comes to foreground
+    document.addEventListener('visibilitychange', async () => {
+        if (!document.hidden) {
+            console.log('App resumed - refreshing weather');
+            await fetchWeather();
+            if (weatherDisplay) {
+                weatherDisplay.textContent = getWeatherDisplay();
+            }
+        }
+    });
+
+    // iOS PWA: Refresh on page show (back from cache)
+    window.addEventListener('pageshow', async (event) => {
+        if (event.persisted) {
+            console.log('Page restored from cache - refreshing weather');
+            await fetchWeather();
+            if (weatherDisplay) {
+                weatherDisplay.textContent = getWeatherDisplay();
+            }
+        }
+    });
 }
 
 // Export functions
@@ -137,5 +168,6 @@ window.WeatherModule = {
     init: initWeather,
     getDelayFactor: getWeatherDelayFactor,
     getDisplay: getWeatherDisplay,
-    getCurrentWeather: () => currentWeather
+    getCurrentWeather: () => currentWeather,
+    refresh: fetchWeather // Allow manual refresh
 };

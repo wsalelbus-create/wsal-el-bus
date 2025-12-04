@@ -572,6 +572,31 @@ function renderRoutes(station) {
 function initGeolocation() {
     console.log('Attempting to get geolocation...');
 
+    // Try to load cached location first (for iOS PWA)
+    const cachedLocation = localStorage.getItem('userLocation');
+    if (cachedLocation) {
+        try {
+            const { lat, lon, timestamp } = JSON.parse(cachedLocation);
+            const age = Date.now() - timestamp;
+
+            // Use cached location if less than 1 hour old
+            if (age < 60 * 60 * 1000) {
+                console.log('📍 Using cached location (age: ' + Math.round(age / 1000 / 60) + ' min)');
+                userLat = lat;
+                userLon = lon;
+                const nearest = findNearestStation(userLat, userLon);
+                currentStation = nearest;
+                renderStation(currentStation);
+
+                // Still try to get fresh location in background
+                refreshGeolocation();
+                return;
+            }
+        } catch (e) {
+            console.error('Failed to parse cached location:', e);
+        }
+    }
+
     // Use fake location for testing (when developing from outside Algeria)
     if (USE_FAKE_LOCATION) {
         console.log('🧪 TESTING MODE: Using fake Algiers location');
@@ -583,12 +608,26 @@ function initGeolocation() {
         return;
     }
 
+    // Get fresh geolocation
+    refreshGeolocation();
+}
+
+// Refresh geolocation (can be called separately)
+function refreshGeolocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 console.log('Geolocation success:', position.coords);
                 userLat = position.coords.latitude;
                 userLon = position.coords.longitude;
+
+                // Cache location for iOS PWA
+                localStorage.setItem('userLocation', JSON.stringify({
+                    lat: userLat,
+                    lon: userLon,
+                    timestamp: Date.now()
+                }));
+
                 const nearest = findNearestStation(userLat, userLon);
                 currentStation = nearest;
                 renderStation(currentStation);
@@ -608,7 +647,7 @@ function initGeolocation() {
                     console.log('Position unavailable');
                 } else if (error.code === 3) {
                     // Timeout
-                    walkTimeText.textContent = 'Location timeout';
+                    walkTimeText.textContent = 'Location timeout - using default';
                     console.log('Geolocation timeout');
                 }
 

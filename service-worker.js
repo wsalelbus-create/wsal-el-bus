@@ -12,6 +12,8 @@ const urlsToCache = [
     './images/icon16.png',
     './images/icon48.png',
     './images/icon128.png',
+    './images/icon192.png',
+    './images/icon512.png',
     './images/station_placeholder.png'
 ];
 

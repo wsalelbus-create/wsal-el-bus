@@ -286,7 +286,15 @@
         window.addEventListener('appinstalled', () => {
             console.log('✅ PWA was installed successfully');
             universalInstallBtn.classList.add('hidden');
+            installModal.classList.add('hidden');
         });
+
+        // Check if app is already installed (on page load)
+        if (window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true) {
+            console.log('✅ App is running in standalone mode (already installed)');
+            universalInstallBtn.classList.add('hidden');
+        }
     </script>
 </body>
 

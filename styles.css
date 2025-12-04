@@ -47,44 +47,16 @@ body {
     border-radius: 16px;
     border: 1px solid var(--glass-border);
     box-shadow: var(--card-shadow);
-    flex-shrink: 0;
 }
 
 .logo-area h1 {
     font-size: 1.2rem;
     font-weight: 700;
-    background: linear-gradient(to right, #fff, #00d2ff);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
-.live-badge {
-    background: var(--accent-color);
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 5px;
-    vertical-align: middle;
-    animation: pulse 2s infinite;
-}
-
-.time-display {
-    font-family: 'Courier New', monospace;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--primary-color);
-}
-
-/* Main Content - NO SCROLL */
-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
-    /* Crucial for nested flex scrolling */
+main::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
 }
 
 /* Station Card */
@@ -95,8 +67,6 @@ main {
     position: relative;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--glass-border);
-    flex-shrink: 0;
-    /* Prevent shrinking */
 }
 
 /* Slider Container */
@@ -219,89 +189,6 @@ main {
 }
 
 .address {
-    font-size: 0.85rem;
-    color: #ddd;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* Walking Time Indicator */
-.walking-time {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--glass-border);
-    padding: 10px 16px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    color: var(--text-main);
-    flex-shrink: 0;
-    /* Prevent shrinking */
-}
-
-.walk-icon {
-    font-size: 1.2rem;
-    filter: grayscale(100%) brightness(200%);
-}
-
-#walk-time-text {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-/* Routes Container - SCROLLABLE */
-.routes-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
-    /* Crucial for nested flex scrolling */
-}
-
-.routes-container h3 {
-    font-size: 1rem;
-    margin-bottom: 12px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    flex-shrink: 0;
-    /* Prevent title from shrinking */
-}
-
-/* Routes List - THIS SCROLLS */
-.routes-list {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) transparent;
-    padding-right: 5px;
-}
-
-.routes-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.routes-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.routes-list::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 3px;
-}
-
-.routes-list::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
-}
-
-.route-item {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     background: var(--glass-bg);
     backdrop-filter: blur(5px);
@@ -310,8 +197,6 @@ main {
     border-radius: 12px;
     margin-bottom: 10px;
     transition: transform 0.2s, background 0.2s;
-    flex-shrink: 0;
-    /* Prevent items from shrinking */
 }
 
 .route-item:hover {
@@ -362,8 +247,6 @@ main {
     display: flex;
     gap: 10px;
     padding-top: 10px;
-    flex-shrink: 0;
-    /* Prevent footer from shrinking */
 }
 
 .nav-btn {
@@ -574,5 +457,4 @@ main {
         transform: translateY(0);
         opacity: 1;
     }
-}. a r a b i c - t i t l e   {   f o n t - f a m i l y :   ' C a i r o ' ,   ' O u t f i t ' ,   s a n s - s e r i f ;   f o n t - w e i g h t :   8 0 0 ;   f o n t - s i z e :   1 . 3 r e m ;   d i r e c t i o n :   r t l ;   }  
- 
+}

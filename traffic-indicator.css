@@ -1,0 +1,47 @@
+/* Traffic Indicator Styles */
+.traffic-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.traffic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    /* Green by default */
+    box-shadow: 0 0 8px currentColor;
+    animation: pulse 2s infinite;
+}
+
+/* Traffic states */
+.traffic-light .traffic-dot {
+    background: #4ade80;
+    /* Green */
+    color: #4ade80;
+}
+
+.traffic-moderate .traffic-dot {
+    background: #fbbf24;
+    /* Yellow */
+    color: #fbbf24;
+}
+
+.traffic-heavy .traffic-dot {
+    background: #ef4444;
+    /* Red */
+    color: #ef4444;
+}
+
+.traffic-text {
+    color: var(--text-main);
+    white-space: nowrap;
+}

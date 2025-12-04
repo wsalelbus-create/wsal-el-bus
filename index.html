@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="./pwa-mobile.css">
     <link rel="stylesheet" href="./station-modal.css">
     <link rel="stylesheet" href="./version-footer.css">
+    <link rel="stylesheet" href="./universal-install.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./leaflet.css" />
@@ -118,12 +119,24 @@
         </div>
     </div>
 
-    <!-- Install Prompt (hidden by default) -->
-    <div id="install-prompt" class="install-prompt hidden">
-        <div class="install-content">
-            <p>📱 Install Wsal El Bus for quick access!</p>
-            <button id="install-btn" class="install-btn">Install</button>
-            <button id="dismiss-btn" class="dismiss-btn">✕</button>
+    <!-- Universal Install Button (Always Visible) -->
+    <button id="universal-install-btn" class="universal-install-btn">
+        📱 Install App
+    </button>
+
+    <!-- Install Instructions Modal -->
+    <div id="install-modal" class="install-modal hidden">
+        <div class="install-modal-content">
+            <div class="install-modal-header">
+                <h3>📱 Install Wsal El Bus</h3>
+                <button id="close-install-modal" class="install-modal-close">✕</button>
+            </div>
+
+            <div id="install-instructions" class="install-instructions">
+                <!-- Instructions will be dynamically inserted based on browser -->
+            </div>
+
+            <button id="install-now-btn" class="install-now-btn hidden">Install Now</button>
         </div>
     </div>
 
@@ -145,31 +158,134 @@
             });
         }
 
-        // Install prompt handling
+        // Universal Install System - Works on ALL browsers
         let deferredPrompt;
-        const installPrompt = document.getElementById('install-prompt');
-        const installBtn = document.getElementById('install-btn');
-        const dismissBtn = document.getElementById('dismiss-btn');
+        const universalInstallBtn = document.getElementById('universal-install-btn');
+        const installModal = document.getElementById('install-modal');
+        const closeInstallModal = document.getElementById('close-install-modal');
+        const installInstructions = document.getElementById('install-instructions');
+        const installNowBtn = document.getElementById('install-now-btn');
 
+        // Detect browser and device
+        function detectBrowserAndDevice() {
+            const ua = navigator.userAgent;
+            const isAndroid = /Android/i.test(ua);
+            const isIOS = /iPhone|iPad|iPod/i.test(ua);
+            const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
+            const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+            const isFirefox = /Firefox/i.test(ua);
+            const isMobile = isAndroid || isIOS;
+
+            return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
+        }
+
+        // Generate install instructions based on browser
+        function getInstallInstructions() {
+            const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
+
+            if (isIOS && isSafari) {
+                return `
+                    <div class="install-step">
+                        <span class="install-step-number">1</span>
+                        <span class="install-step-text">Tap the <strong>Share</strong> button <span class="browser-badge">⬆️</span> at the bottom</span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">2</span>
+                        <span class="install-step-text">Scroll and tap <strong>"Add to Home Screen"</strong> <span class="browser-badge">➕</span></span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">3</span>
+                        <span class="install-step-text">Tap <strong>"Add"</strong> in the top right</span>
+                    </div>
+                `;
+            } else if (isAndroid && isChrome) {
+                return `
+                    <div class="install-step">
+                        <span class="install-step-number">1</span>
+                        <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span> in the top right</span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">2</span>
+                        <span class="install-step-text">Look for <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">3</span>
+                        <span class="install-step-text">Tap <strong>"Install"</strong> to add to your home screen</span>
+                    </div>
+                `;
+            } else if (isAndroid) {
+                return `
+                    <div class="install-step">
+                        <span class="install-step-number">1</span>
+                        <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span></span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">2</span>
+                        <span class="install-step-text">Select <strong>"Add to Home screen"</strong></span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">3</span>
+                        <span class="install-step-text">Confirm to add the shortcut</span>
+                    </div>
+                `;
+            } else {
+                // Desktop
+                return `
+                    <div class="install-step">
+                        <span class="install-step-number">1</span>
+                        <span class="install-step-text">Look for the <strong>install icon</strong> <span class="browser-badge">⊕</span> in the address bar</span>
+                    </div>
+                    <div class="install-step">
+                        <span class="install-step-number">2</span>
+                        <span class="install-step-text">Or click the button below to install directly</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Don't prevent default on mobile - let Chrome show "Install app" in menu
-            // e.preventDefault();  // Commented out to allow native Chrome install
+            console.log('🎉 beforeinstallprompt event fired!');
             deferredPrompt = e;
-            installPrompt.classList.remove('hidden');
+            // Show the "Install Now" button
+            installNowBtn.classList.remove('hidden');
         });
 
-        installBtn.addEventListener('click', async () => {
+        // Universal install button click
+        universalInstallBtn.addEventListener('click', () => {
+            installInstructions.innerHTML = getInstallInstructions();
+            installModal.classList.remove('hidden');
+        });
+
+        // Close modal
+        closeInstallModal.addEventListener('click', () => {
+            installModal.classList.add('hidden');
+        });
+
+        // Click outside modal to close
+        installModal.addEventListener('click', (e) => {
+            if (e.target === installModal) {
+                installModal.classList.add('hidden');
+            }
+        });
+
+        // Install Now button (only shows if beforeinstallprompt fired)
+        installNowBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 console.log(`User response: ${outcome}`);
+                if (outcome === 'accepted') {
+                    installModal.classList.add('hidden');
+                }
                 deferredPrompt = null;
-                installPrompt.classList.add('hidden');
             }
         });
 
-        dismissBtn.addEventListener('click', () => {
-            installPrompt.classList.add('hidden');
+        // Log when app is installed
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA was installed successfully');
+            universalInstallBtn.classList.add('hidden');
         });
     </script>
 </body>

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="./station-modal.css">
     <link rel="stylesheet" href="./version-footer.css">
     <link rel="stylesheet" href="./universal-install.css">
+    <link rel="stylesheet" href="./weather-display.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./leaflet.css" />
@@ -43,6 +44,7 @@
                 <span class="live-badge">LIVE</span>
             </div>
             <div class="time-display" id="algiers-time">--:--</div>
+            <div class="weather-display" id="weather-display">🌤️</div>
         </header>
 
         <main>
@@ -141,8 +143,9 @@
     </div>
 
     <!-- Scripts -->
-    <script src="leaflet.js"></script>
-    <script src="app.js"></script>
+    <script src="./leaflet.js"></script>
+    <script src="./weather.js"></script>
+    <script src="./app.js"></script>
 
     <!-- Service Worker Registration -->
     <script>

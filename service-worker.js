@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wsal-el-bus-v1';
+const CACHE_NAME = 'wsal-el-bus-v3';
 const urlsToCache = [
     './',
     './index.html',
@@ -6,7 +6,10 @@ const urlsToCache = [
     './pwa-mobile.css',
     './station-modal.css',
     './version-footer.css',
+    './universal-install.css',
+    './weather-display.css',
     './app.js',
+    './weather.js',
     './leaflet.css',
     './leaflet.js',
     './images/icon16.png',

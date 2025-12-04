@@ -25,22 +25,33 @@ const ROUTE_PATHS = {
         { lat: 36.7800, lon: 3.0400, name: 'Bouzareah Lower' },
         { lat: 36.7900, lon: 3.0350, name: 'Bouzareah' }
     ],
+    '31': [ // Hydra ↔ Place Audin
+        { lat: 36.7692, lon: 3.0549, name: 'Place Audin' },
+        { lat: 36.7650, lon: 3.0520, name: 'Didouche Mourad' },
+        { lat: 36.7600, lon: 3.0490, name: 'Telemly' },
+        { lat: 36.7550, lon: 3.0460, name: 'Ben Aknoun Lower' },
+        { lat: 36.7435, lon: 3.0421, name: 'Hydra' }
+    ],
+    '54': [ // El Mouradia ↔ Place Audin
+        { lat: 36.7692, lon: 3.0549, name: 'Place Audin' },
+        { lat: 36.7650, lon: 3.0530, name: 'Grande Poste' },
+        { lat: 36.7600, lon: 3.0520, name: 'Didouche Mourad' },
+        { lat: 36.7550, lon: 3.0515, name: 'Rue Larbi Ben M\'hidi' },
+        { lat: 36.7482, lon: 3.0511, name: 'El Mouradia' }
+    ],
+    '67': [ // Ben Aknoun route
+        { lat: 36.7847, lon: 3.0625, name: 'Place des Martyrs' },
+        { lat: 36.7750, lon: 3.0600, name: 'Grande Poste' },
+        { lat: 36.7692, lon: 3.0549, name: 'Place Audin' },
+        { lat: 36.7600, lon: 3.0490, name: 'Telemly' },
+        { lat: 36.7500, lon: 3.0450, name: 'Ben Aknoun Lower' },
+        { lat: 36.7400, lon: 3.0400, name: 'Ben Aknoun' }
+    ],
     '16': [ // Kouba route
         { lat: 36.7606, lon: 3.0553, name: '1er Mai' },
         { lat: 36.7650, lon: 3.0600, name: 'Belouizdad' },
         { lat: 36.7700, lon: 3.0700, name: 'Mohamed Belouizdad' },
         { lat: 36.7400, lon: 3.0800, name: 'Kouba' }
-    ],
-    '27': [ // Palais de la Culture route
-        { lat: 36.7606, lon: 3.0553, name: '1er Mai' },
-        { lat: 36.7650, lon: 3.0600, name: 'Belouizdad' },
-        { lat: 36.7550, lon: 3.0650, name: 'Palais de la Culture' }
-    ],
-    '31': [ // Audin <-> Hydra
-        { lat: 36.7700, lon: 3.0553, name: 'Place Audin' },
-        { lat: 36.7650, lon: 3.0500, name: 'Didouche Mourad' },
-        { lat: 36.7550, lon: 3.0450, name: 'Ben Aknoun Junction' },
-        { lat: 36.7472, lon: 3.0403, name: 'Hydra' }
     ],
     '33': [ // Kouba route
         { lat: 36.7700, lon: 3.0553, name: 'Place Audin' },
@@ -202,13 +213,13 @@ const STATIONS = [
         address: 'Casbah, Algiers',
         image: 'images/station_placeholder.png',
         routes: [
-            { number: '100', dest: 'Aéroport', interval: 60, startTime: '05:00', endTime: '23:00', totalDistance: 18.5 },
-            { number: '101', dest: 'Birtouta', interval: 40, startTime: '06:00', endTime: '18:30', totalDistance: 15.0 },
-            { number: '99', dest: 'Aéroport', interval: 60, startTime: '06:00', endTime: '00:50', totalDistance: 18.5 },
+            { number: '100', dest: 'Aéroport', interval: 40, startTime: '06:00', endTime: '18:30', totalDistance: 18.5 },
+            { number: '101', dest: 'Birtouta', interval: 35, startTime: '06:00', endTime: '18:30', totalDistance: 15.0 },
+            { number: '99', dest: 'Aéroport', interval: 40, startTime: '06:00', endTime: '18:30', totalDistance: 18.5 },
             { number: '58', dest: 'Chevalley', interval: 30, startTime: '06:00', endTime: '18:30', totalDistance: 12.0 },
-            { number: '67', dest: 'Ben Aknoun', interval: 30, startTime: '06:00', endTime: '18:30', totalDistance: 8.5 },
+            { number: '67', dest: 'Ben Aknoun', interval: 25, startTime: '06:00', endTime: '18:30', totalDistance: 8.5 },
             { number: '07', dest: 'El Harrach', interval: 25, startTime: '06:00', endTime: '18:30', totalDistance: 10.0 },
-            { number: '90', dest: 'Birtouta', interval: 40, startTime: '06:00', endTime: '18:30', totalDistance: 15.0 },
+            { number: '90', dest: 'Birtouta', interval: 35, startTime: '06:00', endTime: '18:30', totalDistance: 15.0 },
             { number: '113', dest: 'Gare Routière Caroubier', interval: 30, startTime: '06:00', endTime: '18:30', totalDistance: 7.0 }
         ]
     },
@@ -359,65 +370,80 @@ function calculateArrivals(station) {
             return { ...route, status: 'Ended', message: 'Service Ended' };
         }
 
-        // GPS-BASED CALCULATION WITH ENHANCED ALGIERS TRAFFIC MODEL
-        // Based on real Algiers traffic statistics:
-        // - Average commute: 50 minutes
-        // - Severe congestion: 3+ hours daily in traffic
-        // - Peak rush hours: 7-9 AM, 4-7 PM
+        // RESEARCH-BASED BUS ARRIVAL CALCULATION
+        // Based on validated urban transit studies:
+        // - Buses operate at 60% of car speed
+        // - Dwell time: 5 + 2.75 seconds per passenger
+        // - Bidirectional operation
 
         // 1. Calculate where the bus is in its cycle
         const minutesSinceStart = currentMinutes - startMins;
         const cyclePosition = minutesSinceStart % route.interval;
 
-        // 2. Determine speed based on Algiers traffic patterns
+        // 2. Determine CAR speed based on Algiers traffic patterns
         const currentDay = algiersTime.getDay(); // 0 = Sunday, 6 = Saturday
         const isWeekend = currentDay === 5 || currentDay === 6; // Friday/Saturday
-        let avgSpeed;
+        let carSpeed;
 
         if (isWeekend) {
             // Weekend: lighter traffic
-            avgSpeed = 22; // km/h
+            carSpeed = 35; // km/h
         } else {
             // Weekday traffic patterns based on Algiers statistics
             if ((currentHour >= 7 && currentHour < 9) || (currentHour >= 16 && currentHour < 19)) {
-                // Peak rush hour: Severe congestion (based on 3+ hours daily in traffic)
-                avgSpeed = 8 + (parseInt(route.number) % 3); // 8-10 km/h (very slow)
+                // Peak rush hour: Severe congestion
+                carSpeed = 12 + (parseInt(route.number) % 3); // 12-14 km/h
             } else if (currentHour >= 12 && currentHour < 14) {
                 // Lunch hour: Moderate traffic
-                avgSpeed = 15; // km/h
+                carSpeed = 22; // km/h
             } else if (currentHour >= 9 && currentHour < 12) {
                 // Mid-morning: Light-moderate traffic
-                avgSpeed = 18; // km/h
+                carSpeed = 28; // km/h
             } else if (currentHour >= 14 && currentHour < 16) {
                 // Afternoon: Moderate traffic
-                avgSpeed = 16; // km/h
+                carSpeed = 25; // km/h
             } else if (currentHour >= 19 && currentHour < 21) {
                 // Evening: Clearing up
-                avgSpeed = 14; // km/h
+                carSpeed = 20; // km/h
             } else {
                 // Early morning/late night: Light traffic
-                avgSpeed = 25; // km/h
+                carSpeed = 40; // km/h
             }
         }
 
-        // 3. Calculate total distance and journey time
-        const totalDistance = route.totalDistance || 10; // km
-        const baseJourneyTime = (totalDistance / avgSpeed) * 60; // minutes
+        // 3. Apply weather delay factor to car speed
+        const weatherFactor = (window.WeatherModule && WeatherModule.getDelayFactor)
+            ? WeatherModule.getDelayFactor()
+            : 1.0;
+        carSpeed = carSpeed / weatherFactor;
 
-        // 4. Operational delay (stops and boarding time only)
-        // Traffic delays already accounted for in speed calculation above
-        let operationalDelay;
+        // 4. Calculate BUS speed (research: buses at 60% of car speed)
+        const busSpeed = carSpeed * 0.6;
+
+        // 5. Get number of stops from route path
+        const routePath = ROUTE_PATHS[route.number];
+        const numberOfStops = routePath ? routePath.length : 5; // Default 5 if no path
+
+        // 6. Calculate dwell time (research formula: 5 + 2.75 seconds per passenger)
+        let avgPassengers;
         if ((currentHour >= 7 && currentHour < 9) || (currentHour >= 16 && currentHour < 19)) {
-            // Rush hour: More passengers, longer boarding times
-            operationalDelay = 8 + (parseInt(route.number) % 5); // 8-12 minutes
+            // Rush hour: 8-12 passengers per stop
+            avgPassengers = 10;
         } else {
-            // Normal hours: Just boarding and stops
-            const delayVariation = parseInt(route.number) % 3; // 0-2
-            operationalDelay = 3 + delayVariation; // 3-5 minutes
+            // Normal hours: 3-5 passengers per stop
+            avgPassengers = 4;
         }
-        const totalJourneyTime = baseJourneyTime + operationalDelay;
 
-        // 5. Calculate arrival time
+        // Dwell time per stop in seconds, convert to minutes
+        const dwellTimePerStop = (5 + (2.75 * avgPassengers)) / 60; // minutes
+        const totalDwellTime = numberOfStops * dwellTimePerStop;
+
+        // 7. Calculate total journey time
+        const totalDistance = route.totalDistance || 10; // km
+        const movementTime = (totalDistance / busSpeed) * 60; // minutes
+        const totalJourneyTime = movementTime + totalDwellTime;
+
+        // 8. Calculate arrival time (bidirectional consideration)
         if (cyclePosition < totalJourneyTime) {
             // Bus is currently on route
             const remainingJourneyTime = totalJourneyTime - cyclePosition;
@@ -816,5 +842,22 @@ btnList.addEventListener('click', () => {
 
 // Init
 initGeolocation();
+
+// Initialize weather module
+if (window.WeatherModule) {
+    WeatherModule.init();
+
+    // Update weather display every 10 minutes
+    function updateWeatherDisplay() {
+        const weatherDisplay = document.getElementById('weather-display');
+        if (weatherDisplay && WeatherModule) {
+            weatherDisplay.textContent = WeatherModule.getDisplay();
+        }
+    }
+
+    updateWeatherDisplay();
+    setInterval(updateWeatherDisplay, 10 * 60 * 1000);
+}
+
 // Refresh arrivals every minute
 setInterval(() => renderRoutes(currentStation), 60000);

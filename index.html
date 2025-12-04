@@ -146,197 +146,260 @@
     <script src="./weather.js"></script>
     <script src="./app.js"></script>
 
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration with Auto-Update -->
     <script>
         if ('serviceWorker' in navigator) {
+            let refreshing = false;
+
+            // Detect controller change and reload page
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    console.log('🔄 New version activated - reloading...');
+                    window.location.reload();
+                }
+            });
+
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
                     .then(registration => {
-                        console.log('ServiceWorker registered:', registration.scope);
+                        console.log('✅ ServiceWorker registered:', registration.scope);
+
+                        // Check for updates every 60 seconds
+                        setInterval(() => {
+                            registration.update();
+                        }, 60000);
+
+                        // Listen for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('📦 New version found - installing...');
+
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    console.log('🎉 New version installed!');
+
+                                    // Show update notification
+                                    showUpdateNotification();
+
+                                    // Tell the new service worker to skip waiting
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                }
+                            });
+                        });
                     })
                     .catch(err => {
-                        console.log('ServiceWorker registration failed:', err);
+                        console.log('❌ ServiceWorker registration failed:', err);
                     });
             });
         }
 
-        // Universal Install System - Works on ALL browsers
-        let deferredPrompt;
-        const universalInstallBtn = document.getElementById('universal-install-btn');
-        const installModal = document.getElementById('install-modal');
-        const closeInstallModal = document.getElementById('close-install-modal');
-        const installInstructions = document.getElementById('install-instructions');
-        const installNowBtn = document.getElementById('install-now-btn');
+        // Show update notification to user
+        function showUpdateNotification() {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #00d2ff, #7b2ff7);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 600;
+                animation: slideDown 0.3s ease;
+            `;
+            notification.textContent = '🎉 Update available! Refreshing...';
+            document.body.appendChild(notification);
 
-        // Detect browser and device
-        function detectBrowserAndDevice() {
-            const ua = navigator.userAgent;
-            const isAndroid = /Android/i.test(ua);
-            const isIOS = /iPhone|iPad|iPod/i.test(ua);
-            const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
-            const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
-            const isFirefox = /Firefox/i.test(ua);
-            const isMobile = isAndroid || isIOS;
+            // Auto-remove after 2 seconds (page will reload anyway)
+            setTimeout(() => notification.remove(), 2000);
+        }
+    </script>
 
-            return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
+    // Universal Install System - Works on ALL browsers
+    let deferredPrompt;
+    const universalInstallBtn = document.getElementById('universal-install-btn');
+    const installModal = document.getElementById('install-modal');
+    const closeInstallModal = document.getElementById('close-install-modal');
+    const installInstructions = document.getElementById('install-instructions');
+    const installNowBtn = document.getElementById('install-now-btn');
+
+    // Detect browser and device
+    function detectBrowserAndDevice() {
+    const ua = navigator.userAgent;
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
+    const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+    const isFirefox = /Firefox/i.test(ua);
+    const isMobile = isAndroid || isIOS;
+
+    return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
+    }
+
+    // Check if desktop - hide button initially, let Chrome show its banner
+    const { isMobile } = detectBrowserAndDevice();
+    if (!isMobile) {
+    universalInstallBtn.classList.add('hidden');
+    }
+
+    // Generate install instructions based on browser
+    function getInstallInstructions() {
+    const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
+
+    if (isIOS && isSafari) {
+    return `
+    <div class="install-step">
+        <span class="install-step-number">1</span>
+        <span class="install-step-text">Tap the <strong>Share</strong> button <span class="browser-badge">⬆️</span> at
+            the bottom</span>
+    </div>
+    <div class="install-step">
+        <span class="install-step-number">2</span>
+        <span class="install-step-text">Scroll and tap <strong>"Add to Home Screen"</strong> <span
+                class="browser-badge">➕</span></span>
+    </div>
+    <div class="install-step">
+        <span class="install-step-number">3</span>
+        <span class="install-step-text">Tap <strong>"Add"</strong> in the top right</span>
+    </div>
+    `;
+    } else if (isAndroid && isChrome) {
+    return `
+    <div class="install-step">
+        <span class="install-step-number">1</span>
+        <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span> in the
+            top right</span>
+    </div>
+    <div class="install-step">
+        <span class="install-step-number">2</span>
+        <span class="install-step-text">Select <strong>"Add to Home screen"</strong> (works on all devices)</span>
+    </div>
+    <div class="install-step">
+        <span class="install-step-number">3</span>
+        <span class="install-step-text">Tap <strong>"Add"</strong> to create the app shortcut</span>
+    </div>
+    `;
+    } else if (isAndroid) {
+    // Check if it's Android Go (low RAM device)
+    const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2; if (isLowRAM) { return ` <div
+        class="install-step">
+        <span class="install-step-text" style="color: var(--accent-color); margin-bottom: 10px; display: block;">
+            <strong>📱 Your device uses Android Go Edition</strong>
+        </span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">1</span>
+            <span class="install-step-text"><strong>Bookmark this page</strong> for quick access</span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">2</span>
+            <span class="install-step-text">Tap <strong>⋮</strong> menu → <strong>⭐ Bookmark</strong></span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">3</span>
+            <span class="install-step-text">Access from bookmarks anytime - works offline!</span>
+        </div>
+        `;
         }
 
-        // Check if desktop - hide button initially, let Chrome show its banner
-        const { isMobile } = detectBrowserAndDevice();
-        if (!isMobile) {
-            universalInstallBtn.classList.add('hidden');
+        return `
+        <div class="install-step">
+            <span class="install-step-number">1</span>
+            <span class="install-step-text">Tap the <strong>menu</strong> button <span
+                    class="browser-badge">⋮</span></span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">2</span>
+            <span class="install-step-text">Select <strong>"Add to Home screen"</strong></span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">3</span>
+            <span class="install-step-text">Confirm to add the shortcut</span>
+        </div>
+        `;
+        } else {
+        // Desktop
+        return `
+        <div class="install-step">
+            <span class="install-step-number">1</span>
+            <span class="install-step-text">Look for the <strong>install icon</strong> <span
+                    class="browser-badge">⊕</span> in the address bar</span>
+        </div>
+        <div class="install-step">
+            <span class="install-step-number">2</span>
+            <span class="install-step-text">Or click the button below to install directly</span>
+        </div>
+        `;
         }
-
-        // Generate install instructions based on browser
-        function getInstallInstructions() {
-            const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
-
-            if (isIOS && isSafari) {
-                return `
-                    <div class="install-step">
-                        <span class="install-step-number">1</span>
-                        <span class="install-step-text">Tap the <strong>Share</strong> button <span class="browser-badge">⬆️</span> at the bottom</span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">2</span>
-                        <span class="install-step-text">Scroll and tap <strong>"Add to Home Screen"</strong> <span class="browser-badge">➕</span></span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">3</span>
-                        <span class="install-step-text">Tap <strong>"Add"</strong> in the top right</span>
-                    </div>
-                `;
-            } else if (isAndroid && isChrome) {
-                return `
-                    <div class="install-step">
-                        <span class="install-step-number">1</span>
-                        <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span> in the top right</span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">2</span>
-                        <span class="install-step-text">Select <strong>"Add to Home screen"</strong> (works on all devices)</span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">3</span>
-                        <span class="install-step-text">Tap <strong>"Add"</strong> to create the app shortcut</span>
-                    </div>
-                `;
-            } else if (isAndroid) {
-                // Check if it's Android Go (low RAM device)
-                const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
-
-                if (isLowRAM) {
-                    return `
-                        <div class="install-step">
-                            <span class="install-step-text" style="color: var(--accent-color); margin-bottom: 10px; display: block;">
-                                <strong>📱 Your device uses Android Go Edition</strong>
-                            </span>
-                        </div>
-                        <div class="install-step">
-                            <span class="install-step-number">1</span>
-                            <span class="install-step-text"><strong>Bookmark this page</strong> for quick access</span>
-                        </div>
-                        <div class="install-step">
-                            <span class="install-step-number">2</span>
-                            <span class="install-step-text">Tap <strong>⋮</strong> menu → <strong>⭐ Bookmark</strong></span>
-                        </div>
-                        <div class="install-step">
-                            <span class="install-step-number">3</span>
-                            <span class="install-step-text">Access from bookmarks anytime - works offline!</span>
-                        </div>
-                    `;
-                }
-
-                return `
-                    <div class="install-step">
-                        <span class="install-step-number">1</span>
-                        <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span></span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">2</span>
-                        <span class="install-step-text">Select <strong>"Add to Home screen"</strong></span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">3</span>
-                        <span class="install-step-text">Confirm to add the shortcut</span>
-                    </div>
-                `;
-            } else {
-                // Desktop
-                return `
-                    <div class="install-step">
-                        <span class="install-step-number">1</span>
-                        <span class="install-step-text">Look for the <strong>install icon</strong> <span class="browser-badge">⊕</span> in the address bar</span>
-                    </div>
-                    <div class="install-step">
-                        <span class="install-step-number">2</span>
-                        <span class="install-step-text">Or click the button below to install directly</span>
-                    </div>
-                `;
-            }
         }
 
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('🎉 beforeinstallprompt event fired!');
-            deferredPrompt = e;
+        console.log('🎉 beforeinstallprompt event fired!');
+        deferredPrompt = e;
 
-            // Desktop: Don't prevent default - let Chrome show its banner
-            // Mobile: Show our custom button since native options may be limited
-            if (isMobile) {
-                e.preventDefault();
-                universalInstallBtn.classList.remove('hidden');
-            }
+        // Desktop: Don't prevent default - let Chrome show its banner
+        // Mobile: Show our custom button since native options may be limited
+        if (isMobile) {
+        e.preventDefault();
+        universalInstallBtn.classList.remove('hidden');
+        }
 
-            // Show the "Install Now" button in modal for both
-            installNowBtn.classList.remove('hidden');
+        // Show the "Install Now" button in modal for both
+        installNowBtn.classList.remove('hidden');
         });
 
         // Universal install button click
         universalInstallBtn.addEventListener('click', () => {
-            installInstructions.innerHTML = getInstallInstructions();
-            installModal.classList.remove('hidden');
+        installInstructions.innerHTML = getInstallInstructions();
+        installModal.classList.remove('hidden');
         });
 
         // Close modal
         closeInstallModal.addEventListener('click', () => {
-            installModal.classList.add('hidden');
+        installModal.classList.add('hidden');
         });
 
         // Click outside modal to close
         installModal.addEventListener('click', (e) => {
-            if (e.target === installModal) {
-                installModal.classList.add('hidden');
-            }
+        if (e.target === installModal) {
+        installModal.classList.add('hidden');
+        }
         });
 
         // Install Now button (only shows if beforeinstallprompt fired)
         installNowBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response: ${outcome}`);
-                if (outcome === 'accepted') {
-                    installModal.classList.add('hidden');
-                }
-                deferredPrompt = null;
-            }
+        if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response: ${outcome}`);
+        if (outcome === 'accepted') {
+        installModal.classList.add('hidden');
+        }
+        deferredPrompt = null;
+        }
         });
 
         // Log when app is installed
         window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA was installed successfully');
-            universalInstallBtn.classList.add('hidden');
-            installModal.classList.add('hidden');
+        console.log('✅ PWA was installed successfully');
+        universalInstallBtn.classList.add('hidden');
+        installModal.classList.add('hidden');
         });
 
         // Check if app is already installed (on page load)
         if (window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true) {
-            console.log('✅ App is running in standalone mode (already installed)');
-            universalInstallBtn.classList.add('hidden');
+        window.navigator.standalone === true) {
+        console.log('✅ App is running in standalone mode (already installed)');
+        universalInstallBtn.classList.add('hidden');
         }
-    </script>
+        </script>
 </body>
 
 </html>

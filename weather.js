@@ -19,10 +19,10 @@ const WEATHER_DELAY_FACTORS = {
     strongWind: 1.1       // 10% slower
 };
 
-// Current weather data
+// Current weather data (null until loaded)
 let currentWeather = {
-    condition: 'clear',
-    temperature: 20,
+    condition: null,
+    temperature: null,
     windSpeed: 0,
     delayFactor: 1.0,
     lastUpdate: null
@@ -106,15 +106,30 @@ function getWeatherDelayFactor() {
 
 // Get weather display info
 function getWeatherDisplay() {
+    if (!currentWeather.temperature) {
+        return '🌤️ ...'; // Loading
+    }
     const emoji = getWeatherEmoji(currentWeather.condition);
     const temp = Math.round(currentWeather.temperature);
     return `${emoji} ${temp}°C`;
 }
 
 // Initialize weather (fetch on load and every 10 minutes)
-function initWeather() {
-    fetchWeather();
-    setInterval(fetchWeather, 10 * 60 * 1000); // Update every 10 minutes
+async function initWeather() {
+    await fetchWeather(); // Wait for first fetch
+
+    // Update display immediately
+    const weatherDisplay = document.getElementById('weather-display');
+    if (weatherDisplay) {
+        weatherDisplay.textContent = getWeatherDisplay();
+    }
+
+    setInterval(async () => {
+        await fetchWeather();
+        if (weatherDisplay) {
+            weatherDisplay.textContent = getWeatherDisplay();
+        }
+    }, 10 * 60 * 1000); // Update every 10 minutes
 }
 
 // Export functions

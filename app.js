@@ -843,20 +843,9 @@ btnList.addEventListener('click', () => {
 // Init
 initGeolocation();
 
-// Initialize weather module
+// Initialize weather module (handles its own display updates)
 if (window.WeatherModule) {
     WeatherModule.init();
-
-    // Update weather display every 10 minutes
-    function updateWeatherDisplay() {
-        const weatherDisplay = document.getElementById('weather-display');
-        if (weatherDisplay && WeatherModule) {
-            weatherDisplay.textContent = WeatherModule.getDisplay();
-        }
-    }
-
-    updateWeatherDisplay();
-    setInterval(updateWeatherDisplay, 10 * 60 * 1000);
 }
 
 // Refresh arrivals every minute

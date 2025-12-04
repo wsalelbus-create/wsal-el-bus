@@ -179,6 +179,12 @@
             return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
         }
 
+        // Check if desktop - hide button initially, let Chrome show its banner
+        const { isMobile } = detectBrowserAndDevice();
+        if (!isMobile) {
+            universalInstallBtn.classList.add('hidden');
+        }
+
         // Generate install instructions based on browser
         function getInstallInstructions() {
             const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
@@ -206,14 +212,39 @@
                     </div>
                     <div class="install-step">
                         <span class="install-step-number">2</span>
-                        <span class="install-step-text">Look for <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></span>
+                        <span class="install-step-text">Select <strong>"Add to Home screen"</strong> (works on all devices)</span>
                     </div>
                     <div class="install-step">
                         <span class="install-step-number">3</span>
-                        <span class="install-step-text">Tap <strong>"Install"</strong> to add to your home screen</span>
+                        <span class="install-step-text">Tap <strong>"Add"</strong> to create the app shortcut</span>
                     </div>
                 `;
             } else if (isAndroid) {
+                // Check if it's Android Go (low RAM device)
+                const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
+
+                if (isLowRAM) {
+                    return `
+                        <div class="install-step">
+                            <span class="install-step-text" style="color: var(--accent-color); margin-bottom: 10px; display: block;">
+                                <strong>📱 Your device uses Android Go Edition</strong>
+                            </span>
+                        </div>
+                        <div class="install-step">
+                            <span class="install-step-number">1</span>
+                            <span class="install-step-text"><strong>Bookmark this page</strong> for quick access</span>
+                        </div>
+                        <div class="install-step">
+                            <span class="install-step-number">2</span>
+                            <span class="install-step-text">Tap <strong>⋮</strong> menu → <strong>⭐ Bookmark</strong></span>
+                        </div>
+                        <div class="install-step">
+                            <span class="install-step-number">3</span>
+                            <span class="install-step-text">Access from bookmarks anytime - works offline!</span>
+                        </div>
+                    `;
+                }
+
                 return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
@@ -247,7 +278,15 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             console.log('🎉 beforeinstallprompt event fired!');
             deferredPrompt = e;
-            // Show the "Install Now" button
+
+            // Desktop: Don't prevent default - let Chrome show its banner
+            // Mobile: Show our custom button since native options may be limited
+            if (isMobile) {
+                e.preventDefault();
+                universalInstallBtn.classList.remove('hidden');
+            }
+
+            // Show the "Install Now" button in modal for both
             installNowBtn.classList.remove('hidden');
         });
 

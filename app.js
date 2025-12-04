@@ -277,7 +277,7 @@ let userLat = null;
 let userLon = null;
 
 // TESTING: Set to true to simulate being in Algiers (for testing from outside Algeria)
-const USE_FAKE_LOCATION = false;
+const USE_FAKE_LOCATION = true;
 const FAKE_LOCATION = {
     lat: 36.7720000, // ~500m north of Place Audin (to show walking route)
     lon: 3.0560000
@@ -586,13 +586,13 @@ function initGeolocation() {
                     console.log('Geolocation timeout');
                 }
 
-                // Fallback to default station
+                // Fallback to default station AFTER error
                 renderStation(currentStation);
             },
             {
-                enableHighAccuracy: false,
-                timeout: 10000,
-                maximumAge: 0
+                enableHighAccuracy: true,  // Better accuracy on mobile
+                timeout: 15000,            // 15 seconds for mobile
+                maximumAge: 30000          // Accept 30-second cached position
             }
         );
     } else {

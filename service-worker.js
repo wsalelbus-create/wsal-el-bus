@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wsal-el-bus-v3';
+const CACHE_NAME = 'wsal-el-bus-v4';
 const urlsToCache = [
     './',
     './index.html',
@@ -26,3 +26,4 @@ const urlsToCache = [
         })
     );
 });
+

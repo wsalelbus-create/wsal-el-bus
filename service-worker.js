@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wsal-el-bus-v4';
+const CACHE_NAME = 'wsal-el-bus-v3';
 const urlsToCache = [
     './',
     './index.html',
@@ -8,7 +8,6 @@ const urlsToCache = [
     './version-footer.css',
     './universal-install.css',
     './weather-display.css',
-    './traffic-indicator.css',
     './app.js',
     './weather.js',
     './leaflet.css',
@@ -21,44 +20,14 @@ const urlsToCache = [
     './images/station_placeholder.png'
 ];
 
-// Listen for SKIP_WAITING message
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        console.log('⏭️ Skipping waiting - activating new version immediately');
-        self.skipWaiting();
-    }
-});
-
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-    console.log('📦 Installing new service worker...');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('✅ Caching app files');
+                console.log('Opened cache');
                 return cache.addAll(urlsToCache);
             })
-    );
-});
-
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-    console.log('🔄 Activating new service worker...');
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('🗑️ Deleting old cache:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => {
-            console.log('✅ New version activated!');
-            // Take control of all pages immediately
-            return self.clients.claim();
-        })
     );
 });
 
@@ -72,6 +41,23 @@ self.addEventListener('fetch', (event) => {
                     return response;
                 }
                 return fetch(event.request);
-            })
+            }
+            )
+    );
+});
+
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+    const cacheWhitelist = [CACHE_NAME];
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
     );
 });

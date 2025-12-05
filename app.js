@@ -882,48 +882,6 @@ btnList.addEventListener('click', () => {
 // Init
 initGeolocation();
 
-// Update traffic indicator based on time
-function updateTrafficIndicator() {
-    const now = new Date();
-    const algiersTime = new Date(now.toLocaleString("en-US", { timeZone: "Africa/Algiers" }));
-    const currentHour = algiersTime.getHours();
-    const currentDay = algiersTime.getDay();
-    const isWeekend = currentDay === 5 || currentDay === 6; // Friday/Saturday
-
-    const indicator = document.getElementById('traffic-indicator');
-    const textElement = indicator.querySelector('.traffic-text');
-
-    // Remove all traffic classes
-    indicator.classList.remove('traffic-light', 'traffic-moderate', 'traffic-heavy');
-
-    if (isWeekend) {
-        // Weekend - light traffic
-        indicator.classList.add('traffic-light');
-        textElement.textContent = 'Light Traffic';
-    } else if ((currentHour >= 7 && currentHour < 9) || (currentHour >= 16 && currentHour < 19)) {
-        // Rush hour - heavy traffic
-        indicator.classList.add('traffic-heavy');
-        textElement.textContent = 'Heavy Traffic';
-    } else if (currentHour >= 12 && currentHour < 14) {
-        // Lunch hour - moderate traffic
-        indicator.classList.add('traffic-moderate');
-        textElement.textContent = 'Moderate Traffic';
-    } else if (currentHour >= 9 && currentHour < 12 || currentHour >= 14 && currentHour < 16) {
-        // Mid-day - moderate traffic
-        indicator.classList.add('traffic-moderate');
-        textElement.textContent = 'Moderate Traffic';
-    } else {
-        // Early morning/late night - light traffic
-        indicator.classList.add('traffic-light');
-        textElement.textContent = 'Light Traffic';
-    }
-}
-
-// Initialize traffic indicator
-updateTrafficIndicator();
-// Update every minute
-setInterval(updateTrafficIndicator, 60000);
-
 // Initialize weather module (handles its own display updates)
 if (window.WeatherModule) {
     WeatherModule.init();

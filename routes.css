@@ -1,39 +1,52 @@
 /* Walking Time and Routes Sections */
 
 /* Walking Time Indicator */
+/* Walking Time Indicator */
 .walking-time {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
+    padding: 16px 20px;
+    /* Increased padding */
+    border-radius: 16px;
+    /* Slightly more rounded */
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
+    gap: 12px;
+    font-size: 1rem;
     color: var(--text-main);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .walk-icon {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    /* Larger icon */
 }
 
 /* Routes Container */
 .routes-container {
-    padding: 0 16px 16px;
+    padding: 0 20px 20px;
+    /* Increased padding */
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .routes-container h3 {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 16px;
     color: var(--text-main);
+    padding-left: 4px;
 }
 
 .routes-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    /* Increased gap */
+    width: 100%;
 }
 
 /* Route Item */
@@ -41,9 +54,18 @@
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    padding: 14px;
-    border-radius: 12px;
+    padding: 18px 20px;
+    /* Increased padding */
+    border-radius: 16px;
     transition: transform 0.2s, background 0.2s;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 90px;
+    /* Ensure substantial height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .route-item:hover {
@@ -54,18 +76,20 @@
 .route-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    /* Increased gap */
 }
 
 .route-number {
     background: var(--primary-color);
     color: #000;
     font-weight: 800;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    min-width: 45px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 1rem;
+    min-width: 50px;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .route-details {
@@ -73,28 +97,34 @@
 }
 
 .route-destination {
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 4px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+    line-height: 1.2;
 }
 
 .route-time {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
 }
 
 .route-arrival {
     text-align: right;
+    min-width: 80px;
 }
 
 .arrival-time {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    /* Larger time */
+    font-weight: 800;
     color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 4px;
 }
 
 .arrival-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }

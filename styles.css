@@ -147,9 +147,9 @@ body {
 
 /* Walking Time Badge (Citymapper Style) */
 .walking-time-badge {
-    position: fixed;
+    position: absolute;
+    /* Relative to map container, not viewport */
     top: calc(16px + env(safe-area-inset-top));
-    /* Below status bar/notch */
     right: 16px;
     z-index: 200;
     background: white;
@@ -177,9 +177,9 @@ body {
 
 /* Map Controls Stack (Location & Compass) */
 .map-controls-stack {
-    position: fixed;
+    position: absolute;
+    /* Relative to map container, not viewport */
     top: calc(70px + env(safe-area-inset-top));
-    /* Below walking badge and status bar */
     right: 16px;
     z-index: 200;
     display: flex;

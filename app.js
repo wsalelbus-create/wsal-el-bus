@@ -829,6 +829,46 @@ if (stationSelectorTrigger) {
     });
 }
 
+// Location Button - Center map on user location
+const locateBtn = document.getElementById('locate-btn');
+if (locateBtn) {
+    locateBtn.addEventListener('click', () => {
+        if (userLat && userLon) {
+            // Center map on user location with animation
+            map.flyTo([userLat, userLon], 16, {
+                duration: 1.5,
+                easeLinearity: 0.5
+            });
+
+            // Visual feedback
+            locateBtn.style.background = 'var(--primary-color)';
+            locateBtn.style.color = 'white';
+            setTimeout(() => {
+                locateBtn.style.background = 'white';
+                locateBtn.style.color = '#333';
+            }, 300);
+        } else {
+            // Try to get location if not available
+            refreshGeolocation();
+        }
+    });
+}
+
+// Compass Button - Always points north (decorative)
+const compassBtn = document.getElementById('compass-btn');
+if (compassBtn) {
+    compassBtn.addEventListener('click', () => {
+        // Reset map bearing to north (0 degrees)
+        map.setBearing(0);
+
+        // Visual feedback
+        compassBtn.style.transform = 'rotate(360deg) scale(1.1)';
+        setTimeout(() => {
+            compassBtn.style.transform = '';
+        }, 300);
+    });
+}
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

@@ -725,6 +725,32 @@ stationModal.addEventListener('click', (e) => {
         hideStationSelector();
     }
 });
+
+// --- Map Functionality ---
+function initMap() {
+    const mapContainer = document.getElementById('map-container');
+
+    // Initialize Leaflet map
+    map = L.map(mapContainer, {
+        zoomControl: false,
+        attributionControl: false
+    }).setView([36.7700, 3.0553], 14); // Slightly closer zoom
+
+    // Add OpenStreetMap tiles (Detailed view with street names, buildings, landmarks)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    mapInitialized = true;
+    updateMap();
+
+    // Invalidate size to ensure it fills the 60% container correctly
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
+}
+
 function updateMap() {
     if (!map) return;
 

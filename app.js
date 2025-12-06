@@ -736,8 +736,8 @@ function initMap() {
         attributionControl: false
     }).setView([36.7700, 3.0553], 14); // Slightly closer zoom
 
-    // Add OpenStreetMap tiles (Detailed view with street names, buildings, landmarks)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Add OpenStreetMap tiles with IndexedDB caching
+    L.tileLayer.cached('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
     }).addTo(map);

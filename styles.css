@@ -35,7 +35,8 @@ body {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    /* NO padding on body - fixed elements handle safe area themselves */
+    overscroll-behavior: none;
+    /* Prevent pull-to-refresh */
 }
 
 .app-container {
@@ -311,11 +312,17 @@ body {
     z-index: 100;
     padding: 24px 16px 16px;
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
-    /* Safe area for bottom */
     overflow-y: auto;
     position: relative;
-    /* Create visual separation from map */
     margin-top: -20px;
+    transition: flex 0.3s ease;
+    /* Smooth transition */
+}
+
+/* Collapsed state - map expanded to 80% */
+.arrivals-panel.collapsed {
+    flex: 2;
+    /* 20% - map takes 80% */
 }
 
 /* Panel Handle */
@@ -328,6 +335,14 @@ body {
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
+    cursor: grab;
+    touch-action: none;
+    /* Prevent pull-to-refresh */
+}
+
+.panel-handle:active {
+    cursor: grabbing;
+    background: #d1d1d6;
 }
 
 /* Walking Time Card */

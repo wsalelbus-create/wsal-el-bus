@@ -869,6 +869,45 @@ if (compassBtn) {
     });
 }
 
+// --- Draggable Arrivals Panel ---
+const arrivalsPanel = document.querySelector('.arrivals-panel');
+const panelHandle = document.querySelector('.panel-handle');
+let isDragging = false;
+let startY = 0;
+let isPanelCollapsed = false;
+
+if (panelHandle && arrivalsPanel) {
+    panelHandle.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startY = e.touches[0].clientY;
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+
+        if (Math.abs(deltaY) > 50) {
+            if (deltaY > 0 && !isPanelCollapsed) {
+                arrivalsPanel.classList.add('collapsed');
+                isPanelCollapsed = true;
+                console.log('📉 Panel collapsed - map expanded');
+            } else if (deltaY < 0 && isPanelCollapsed) {
+                arrivalsPanel.classList.remove('collapsed');
+                isPanelCollapsed = false;
+                console.log('📈 Panel expanded - map shrunk');
+            }
+            isDragging = false;
+        }
+    });
+
+    document.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+}
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

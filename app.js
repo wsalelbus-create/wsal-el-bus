@@ -12,6 +12,15 @@ const ROUTE_PATHS = {
         { lat: 36.7770, lon: 3.0590, name: 'Rue Larbi Ben M\'hidi' },
         { lat: 36.7847, lon: 3.0625, name: 'Place des Martyrs' }
     ],
+
+    // --- DOM Elements ---
+    const stationSelectorTrigger = document.getElementById('station-selector-trigger');
+    const stationNameEl = document.getElementById('station-name');
+    const walkTimeText = document.getElementById('walk-time-text');
+    const routesListEl = document.getElementById('routes-list');
+
+    // Map Elements
+    const mapDistanceEl = document.getElementById('map-distance');
     '07': [ // Martyrs -> El Harrach
         { lat: 36.7847, lon: 3.0625, name: 'Place des Martyrs' },
         { lat: 36.7750, lon: 3.0700, name: 'Grande Poste' },
@@ -473,22 +482,16 @@ function calculateArrivals(station) {
 
 // --- UI Updates ---
 function renderStation(station) {
+    // Update Floating Badge
     stationNameEl.textContent = station.name;
-    stationAddrEl.textContent = station.address;
-    stationImgEl.src = station.image;
 
     // Update walking time
     updateWalkingTime(station);
 
-    // Fade in effect for image
-    stationImgEl.style.opacity = 0;
-    setTimeout(() => {
-        stationImgEl.style.opacity = 1;
-    }, 200);
-
+    // Render Routes
     renderRoutes(station);
 
-    // Update map if it's initialized
+    // Update map
     if (mapInitialized) {
         updateMap();
     }
@@ -726,46 +729,6 @@ stationModal.addEventListener('click', (e) => {
     }
 });
 
-// --- Slider Functionality ---
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
-const dots = document.querySelectorAll('.dot');
-let map = null;
-let mapInitialized = false;
-
-function showSlide(index) {
-    // Remove active class from all slides and dots
-    slides.forEach(slide => {
-        slide.classList.remove('active', 'prev');
-    });
-    dots.forEach(dot => dot.classList.remove('active'));
-
-    // Add prev class to previous slide
-    if (currentSlide < index) {
-        slides[currentSlide].classList.add('prev');
-    }
-
-    // Add active class to current slide and dot
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-
-    currentSlide = index;
-
-    // Initialize map when map slide is shown
-    if (index === 1 && !mapInitialized) {
-        initMap();
-    } else if (index === 1 && mapInitialized) {
-        updateMap();
-    }
-}
-
-// Dot click handlers
-dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        showSlide(index);
-    });
-});
-
 // --- Map Functionality ---
 function initMap() {
     const mapContainer = document.getElementById('map-container');
@@ -774,7 +737,7 @@ function initMap() {
     map = L.map(mapContainer, {
         zoomControl: false,
         attributionControl: false
-    }).setView([36.7700, 3.0553], 13); // Default to Algiers center
+    }).setView([36.7700, 3.0553], 14); // Slightly closer zoom
 
     // Add OpenStreetMap tiles (Detailed view with street names, buildings, landmarks)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -784,6 +747,11 @@ function initMap() {
 
     mapInitialized = true;
     updateMap();
+
+    // Invalidate size to ensure it fills the 60% container correctly
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
 }
 
 function updateMap() {
@@ -797,10 +765,7 @@ function updateMap() {
     });
 
     const station = currentStation;
-    const mapStationName = document.getElementById('map-station-name');
-    const mapDistance = document.getElementById('map-distance');
-
-    mapStationName.textContent = station.name;
+    // mapStationName removed, we only update distance text
 
     // Add station marker with blue bus icon (ETUSA blue color)
     const stationMarker = L.marker([station.lat, station.lon], {
@@ -846,40 +811,29 @@ function updateMap() {
 
         // Calculate and display distance
         const distance = getDistanceFromLatLonInKm(userLat, userLon, station.lat, station.lon);
-        mapDistance.textContent = `📍 ${distance.toFixed(2)} km away`;
+        mapDistanceEl.textContent = `📍 ${distance.toFixed(2)} km away`;
 
         // Fit map to show both markers
         const bounds = L.latLngBounds([[userLat, userLon], [station.lat, station.lon]]);
-        map.fitBounds(bounds, { padding: [30, 30] });
+        map.fitBounds(bounds, { padding: [50, 50] });
     } else {
         // No user location, just center on station
         map.setView([station.lat, station.lon], 15);
-        mapDistance.textContent = '📍 Location unavailable';
+        mapDistanceEl.textContent = '📍 Location unavailable';
     }
 }
 
 // --- Event Listeners ---
-btnNearest.addEventListener('click', () => {
-    btnNearest.classList.add('active');
-    btnList.classList.remove('active');
-    if (userLat && userLon) {
-        const nearest = findNearestStation(userLat, userLon);
-        currentStation = nearest;
-        renderStation(currentStation);
-        if (mapInitialized) {
-            updateMap();
-        }
-    } else {
-        // Retry geo or just keep current
-        initGeolocation();
-    }
-});
 
-btnList.addEventListener('click', () => {
-    showStationSelector();
-});
+// Floating Station Selector Click
+if (stationSelectorTrigger) {
+    stationSelectorTrigger.addEventListener('click', () => {
+        showStationSelector();
+    });
+}
 
 // Init
+initMap(); // Initialize map immediately (background)
 initGeolocation();
 
 // Initialize weather module (handles its own display updates)

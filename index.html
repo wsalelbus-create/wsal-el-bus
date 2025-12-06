@@ -46,77 +46,68 @@
             <div class="time-display" id="algiers-time">--:--</div>
         </header>
 
-        <main>
-            <section class="station-card glass-panel">
-                <div class="slider-container">
-                    <!-- Slide 1: Station Image -->
-                    <div class="slide active" id="slide-image">
-                        <div class="station-image-container">
-                            <img src="images/station_placeholder.png" alt="Station" id="current-station-img"
-                                class="station-img">
-                            <div class="station-overlay">
-                                <h2 id="station-name">Loading Station...</h2>
-                                <p id="station-address" class="address"><span class="icon">📍</span> <span
-                                        id="addr-text">Locating...</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2: Map View -->
-                    <div class="slide" id="slide-map">
-                        <div id="map-container"></div>
-                        <div class="map-overlay">
-                            <h2 id="map-station-name">Loading...</h2>
-                            <p class="map-distance" id="map-distance">📍 Calculating distance...</p>
-                        </div>
-                    </div>
-
-                    <!-- Slider Navigation Dots -->
-                    <div class="slider-dots">
-                        <span class="dot active" data-slide="0"></span>
-                        <span class="dot" data-slide="1"></span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="routes-container">
-                <!-- Walking Time Indicator -->
-                <div class="walking-time" id="walking-time">
-                    <span class="walk-icon">🚶</span>
-                    <span id="walk-time-text">Calculating...</span>
-                </div>
-
-                <h3>Next Arrivals</h3>
-                <div class="routes-list" id="routes-list">
-                    <!-- Route items will be injected here -->
-                    <div class="loading-spinner"></div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Station Selector Modal -->
-        <div id="station-modal" class="modal-overlay hidden">
-            <div class="modal-content glass-panel">
-                <div class="modal-header">
-                    <h3>Select Station</h3>
-                    <button id="close-modal" class="close-btn">✕</button>
-                </div>
-                <input type="text" id="station-search" class="station-search" placeholder="Search stations...">
-                <div class="station-list" id="station-list">
-                    <!-- Station items will be injected here -->
-                </div>
+        <!-- Map View (Top 60%) -->
+        <div id="map-view" class="map-view-container">
+            <div id="map-container"></div>
+            <div class="map-overlay-info">
+                <p id="map-distance" class="map-distance badge">📍 Locating...</p>
             </div>
         </div>
 
-        <footer class="glass-footer">
-            <button id="btn-nearest" class="nav-btn active">Nearest</button>
-            <button id="btn-list" class="nav-btn">All Stations</button>
-        </footer>
+        <!-- Floating Station Control (Middle Overlap) -->
+        <div id="floating-controls" class="floating-controls">
+            <div class="station-selector-card" id="station-selector-trigger">
+                <div class="station-info-left">
+                    <span class="station-icon">🚏</span>
+                    <div class="station-text-group">
+                        <h2 id="station-name">Loading...</h2>
+                        <div class="station-subtext">Tap to change station</div>
+                    </div>
+                </div>
+                <div class="station-select-icon">⋮</div>
+            </div>
+        </div>
+
+        <!-- Arrivals Panel (Bottom 40%) -->
+        <div id="arrivals-panel" class="arrivals-panel">
+            <div class="panel-handle"></div>
+
+            <!-- Walking Time Indicator -->
+            <div class="walking-time" id="walking-time">
+                <span class="walk-icon">🚶</span>
+                <span id="walk-time-text">Calculating...</span>
+            </div>
+
+            <div class="routes-header">
+                <h3>Next Arrivals</h3>
+                <span class="live-indicator">● Live</span>
+            </div>
+
+            <div class="routes-list" id="routes-list">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- Simplified Footer (Inside Arrivals or removed? User requested citymapper style which usually has bottom nav, but 60/40 implies list goes to bottom. I will keep a minimal footer inside the panel if needed, or remove if distinct "Get Me Home" buttons are preferred. For now, hiding the old footer as it conflicts with the bottom sheet concept.) -->
 
         <!-- Version Footer -->
         <div class="version-footer">
             <div class="version-text">Wsal El Bus 1.10a</div>
             <div class="tagline">Made with ❤️ for Algiers commuters</div>
+        </div>
+    </div>
+
+    <!-- Station Selector Modal -->
+    <div id="station-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Select Station</h3>
+                <button id="close-modal" class="close-btn">✕</button>
+            </div>
+            <input type="text" id="station-search" class="station-search" placeholder="Search stations...">
+            <div class="station-list" id="station-list">
+                <!-- Station items will be injected here -->
+            </div>
         </div>
     </div>
 

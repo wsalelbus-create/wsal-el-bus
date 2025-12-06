@@ -135,73 +135,75 @@
 
     <!-- Scripts -->
     <script src="./leaflet.js"></script>
+    <script src="./tile-cache.js"></script>
     <script src="./weather.js"></script>
-    <script src="./app.js"></script>
+    <parameter name="app.js">
+        </script>
 
-    <!-- Service Worker Registration for Tile Caching -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('✅ Service Worker registered for tile caching:', registration.scope);
-                        // Force update to get new version
-                        registration.update();
-                    })
-                    .catch(error => {
-                        console.log('❌ Service Worker registration failed:', error);
-                    });
-            });
-        }
-    </script>
+        <!-- Service Worker Registration for Tile Caching -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js')
+                        .then(registration => {
+                            console.log('✅ Service Worker registered for tile caching:', registration.scope);
+                            // Force update to get new version
+                            registration.update();
+                        })
+                        .catch(error => {
+                            console.log('❌ Service Worker registration failed:', error);
+                        });
+                });
+            }
+        </script>
 
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered:', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed:', err);
-                    });
-            });
-        }
+        <!-- Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./service-worker.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registered:', registration.scope);
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed:', err);
+                        });
+                });
+            }
 
-        // Universal Install System - Works on ALL browsers
-        let deferredPrompt;
-        const universalInstallBtn = document.getElementById('universal-install-btn');
-        const installModal = document.getElementById('install-modal');
-        const closeInstallModal = document.getElementById('close-install-modal');
-        const installInstructions = document.getElementById('install-instructions');
-        const installNowBtn = document.getElementById('install-now-btn');
+            // Universal Install System - Works on ALL browsers
+            let deferredPrompt;
+            const universalInstallBtn = document.getElementById('universal-install-btn');
+            const installModal = document.getElementById('install-modal');
+            const closeInstallModal = document.getElementById('close-install-modal');
+            const installInstructions = document.getElementById('install-instructions');
+            const installNowBtn = document.getElementById('install-now-btn');
 
-        // Detect browser and device
-        function detectBrowserAndDevice() {
-            const ua = navigator.userAgent;
-            const isAndroid = /Android/i.test(ua);
-            const isIOS = /iPhone|iPad|iPod/i.test(ua);
-            const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
-            const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
-            const isFirefox = /Firefox/i.test(ua);
-            const isMobile = isAndroid || isIOS;
+            // Detect browser and device
+            function detectBrowserAndDevice() {
+                const ua = navigator.userAgent;
+                const isAndroid = /Android/i.test(ua);
+                const isIOS = /iPhone|iPad|iPod/i.test(ua);
+                const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
+                const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+                const isFirefox = /Firefox/i.test(ua);
+                const isMobile = isAndroid || isIOS;
 
-            return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
-        }
+                return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
+            }
 
-        // Check if desktop - hide button initially, let Chrome show its banner
-        const { isMobile } = detectBrowserAndDevice();
-        if (!isMobile) {
-            universalInstallBtn.classList.add('hidden');
-        }
+            // Check if desktop - hide button initially, let Chrome show its banner
+            const { isMobile } = detectBrowserAndDevice();
+            if (!isMobile) {
+                universalInstallBtn.classList.add('hidden');
+            }
 
-        // Generate install instructions based on browser
-        function getInstallInstructions() {
-            const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
+            // Generate install instructions based on browser
+            function getInstallInstructions() {
+                const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
 
-            if (isIOS && isSafari) {
-                return `
+                if (isIOS && isSafari) {
+                    return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>Share</strong> button <span class="browser-badge">⬆️</span> at the bottom</span>
@@ -215,8 +217,8 @@
                         <span class="install-step-text">Tap <strong>"Add"</strong> in the top right</span>
                     </div>
                 `;
-            } else if (isAndroid && isChrome) {
-                return `
+                } else if (isAndroid && isChrome) {
+                    return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span> in the top right</span>
@@ -230,12 +232,12 @@
                         <span class="install-step-text">Tap <strong>"Add"</strong> to create the app shortcut</span>
                     </div>
                 `;
-            } else if (isAndroid) {
-                // Check if it's Android Go (low RAM device)
-                const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
+                } else if (isAndroid) {
+                    // Check if it's Android Go (low RAM device)
+                    const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
 
-                if (isLowRAM) {
-                    return `
+                    if (isLowRAM) {
+                        return `
                         <div class="install-step">
                             <span class="install-step-text" style="color: var(--accent-color); margin-bottom: 10px; display: block;">
                                 <strong>📱 Your device uses Android Go Edition</strong>
@@ -254,9 +256,9 @@
                             <span class="install-step-text">Access from bookmarks anytime - works offline!</span>
                         </div>
                     `;
-                }
+                    }
 
-                return `
+                    return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span></span>
@@ -270,9 +272,9 @@
                         <span class="install-step-text">Confirm to add the shortcut</span>
                     </div>
                 `;
-            } else {
-                // Desktop
-                return `
+                } else {
+                    // Desktop
+                    return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Look for the <strong>install icon</strong> <span class="browser-badge">⊕</span> in the address bar</span>
@@ -282,70 +284,70 @@
                         <span class="install-step-text">Or click the button below to install directly</span>
                     </div>
                 `;
-            }
-        }
-
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('🎉 beforeinstallprompt event fired!');
-            deferredPrompt = e;
-
-            // Desktop: Don't prevent default - let Chrome show its banner
-            // Mobile: Show our custom button since native options may be limited
-            if (isMobile) {
-                e.preventDefault();
-                universalInstallBtn.classList.remove('hidden');
+                }
             }
 
-            // Show the "Install Now" button in modal for both
-            installNowBtn.classList.remove('hidden');
-        });
+            // Listen for beforeinstallprompt event
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('🎉 beforeinstallprompt event fired!');
+                deferredPrompt = e;
 
-        // Universal install button click
-        universalInstallBtn.addEventListener('click', () => {
-            installInstructions.innerHTML = getInstallInstructions();
-            installModal.classList.remove('hidden');
-        });
+                // Desktop: Don't prevent default - let Chrome show its banner
+                // Mobile: Show our custom button since native options may be limited
+                if (isMobile) {
+                    e.preventDefault();
+                    universalInstallBtn.classList.remove('hidden');
+                }
 
-        // Close modal
-        closeInstallModal.addEventListener('click', () => {
-            installModal.classList.add('hidden');
-        });
+                // Show the "Install Now" button in modal for both
+                installNowBtn.classList.remove('hidden');
+            });
 
-        // Click outside modal to close
-        installModal.addEventListener('click', (e) => {
-            if (e.target === installModal) {
+            // Universal install button click
+            universalInstallBtn.addEventListener('click', () => {
+                installInstructions.innerHTML = getInstallInstructions();
+                installModal.classList.remove('hidden');
+            });
+
+            // Close modal
+            closeInstallModal.addEventListener('click', () => {
                 installModal.classList.add('hidden');
-            }
-        });
+            });
 
-        // Install Now button (only shows if beforeinstallprompt fired)
-        installNowBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response: ${outcome}`);
-                if (outcome === 'accepted') {
+            // Click outside modal to close
+            installModal.addEventListener('click', (e) => {
+                if (e.target === installModal) {
                     installModal.classList.add('hidden');
                 }
-                deferredPrompt = null;
+            });
+
+            // Install Now button (only shows if beforeinstallprompt fired)
+            installNowBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response: ${outcome}`);
+                    if (outcome === 'accepted') {
+                        installModal.classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+
+            // Log when app is installed
+            window.addEventListener('appinstalled', () => {
+                console.log('✅ PWA was installed successfully');
+                universalInstallBtn.classList.add('hidden');
+                installModal.classList.add('hidden');
+            });
+
+            // Check if app is already installed (on page load)
+            if (window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true) {
+                console.log('✅ App is running in standalone mode (already installed)');
+                universalInstallBtn.classList.add('hidden');
             }
-        });
-
-        // Log when app is installed
-        window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA was installed successfully');
-            universalInstallBtn.classList.add('hidden');
-            installModal.classList.add('hidden');
-        });
-
-        // Check if app is already installed (on page load)
-        if (window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true) {
-            console.log('✅ App is running in standalone mode (already installed)');
-            universalInstallBtn.classList.add('hidden');
-        }
-    </script>
+        </script>
 </body>
 
 </html>

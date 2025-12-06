@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Panel Swipe Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .map {
+            flex: 6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-family: sans-serif;
+            transition: flex 0.3s ease;
+        }
+
+        .panel {
+            flex: 4;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+            transition: flex 0.3s ease;
+            overscroll-behavior-y: contain;
+        }
+
+        .panel.collapsed {
+            flex: 2;
+        }
+
+        .handle {
+            width: 40px;
+            height: 5px;
+            background: #ccc;
+            border-radius: 3px;
+            margin: 0 auto 20px auto;
+        }
+
+        .status {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .item {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="map" id="map">
+            <span>MAP AREA</span>
+        </div>
+        <div class="panel" id="panel">
+            <div class="handle"></div>
+            <div class="status" id="status">
+                Status: Ready<br>
+                Swipe down on panel to collapse (expand map)<br>
+                Swipe up to expand panel
+            </div>
+            <div class="item">Bus Route 1 - 5 min</div>
+            <div class="item">Bus Route 2 - 8 min</div>
+            <div class="item">Bus Route 3 - 12 min</div>
+            <div class="item">Bus Route 4 - 15 min</div>
+            <div class="item">Bus Route 5 - 20 min</div>
+        </div>
+    </div>
+
+    <script>
+        const panel = document.getElementById('panel');
+        const status = document.getElementById('status');
+        let startY = 0;
+        let startScrollTop = 0;
+        let isCollapsed = false;
+
+        function log(msg) {
+            console.log(msg);
+            status.innerHTML = msg + '<br>Collapsed: ' + isCollapsed;
+        }
+
+        log('✅ Script loaded');
+
+        panel.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            startScrollTop = panel.scrollTop;
+            log('👆 Touch start at Y=' + startY + ', scrollTop=' + startScrollTop);
+        }, { passive: true });
+
+        panel.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+
+            log('👉 Moving: deltaY=' + deltaY.toFixed(0) + ', scrollTop=' + panel.scrollTop);
+
+            // Only collapse when at top of scroll AND swiping down
+            if (startScrollTop === 0 && panel.scrollTop === 0 && deltaY > 80 && !isCollapsed) {
+                panel.classList.add('collapsed');
+                isCollapsed = true;
+                log('📉 COLLAPSED!');
+            }
+
+            // Expand when swiping up while collapsed
+            if (isCollapsed && deltaY < -50) {
+                panel.classList.remove('collapsed');
+                isCollapsed = false;
+                log('📈 EXPANDED!');
+            }
+        }, { passive: true });
+
+        panel.addEventListener('touchend', () => {
+            log('👋 Touch end. Collapsed: ' + isCollapsed);
+        }, { passive: true });
+    </script>
+</body>
+
+</html>

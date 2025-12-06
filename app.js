@@ -869,31 +869,6 @@ if (compassBtn) {
     });
 }
 
-// --- Prevent iOS Pull-to-Refresh (but allow normal scrolling) ---
-const arrivalsPanel = document.querySelector('.arrivals-panel');
-if (arrivalsPanel) {
-    let startY = 0;
-    let startScrollTop = 0;
-
-    arrivalsPanel.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-        startScrollTop = arrivalsPanel.scrollTop;
-    }, { passive: true });
-
-    arrivalsPanel.addEventListener('touchmove', (e) => {
-        const currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY;
-
-        // ONLY prevent pull-to-refresh when:
-        // - Started at top (startScrollTop === 0)
-        // - Still at top (scrollTop === 0)
-        // - Pulling DOWN (deltaY > 0)
-        if (startScrollTop === 0 && arrivalsPanel.scrollTop === 0 && deltaY > 0) {
-            e.preventDefault();
-        }
-    }, { passive: false });
-}
-
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

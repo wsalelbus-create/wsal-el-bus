@@ -78,7 +78,8 @@ body {
 
 /* Header Floating on Map */
 .glass-header {
-    position: absolute;
+    position: fixed;
+    /* Fixed to viewport so it stays when scrolling */
     top: calc(16px + env(safe-area-inset-top));
     /* Below status bar */
     left: 16px;

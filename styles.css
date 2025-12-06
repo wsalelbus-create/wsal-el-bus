@@ -150,13 +150,10 @@ body {
 /* Walking Time Badge (Citymapper Style) */
 .walking-time-badge {
     position: fixed;
-    /* Fixed to viewport */
-    top: 16px;
-    /* Same height as header */
+    top: calc(16px + env(safe-area-inset-top));
+    /* Below status bar/notch */
     right: 16px;
-    /* Top-right corner */
     z-index: 200;
-    /* High z-index to ensure visibility */
     background: white;
     padding: 10px 16px;
     border-radius: 24px;
@@ -183,8 +180,8 @@ body {
 /* Map Controls Stack (Location & Compass) */
 .map-controls-stack {
     position: fixed;
-    top: 120px;
-    /* Below walking badge */
+    top: calc(70px + env(safe-area-inset-top));
+    /* Below walking badge and status bar */
     right: 16px;
     z-index: 200;
     display: flex;

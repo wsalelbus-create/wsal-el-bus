@@ -331,24 +331,36 @@ body {
     /* 20% - map takes 80% */
 }
 
-/* Panel Handle */
+/* Panel Handle - larger touch target */
 .panel-handle {
-    width: 40px;
-    height: 4px;
-    background: #e5e5ea;
-    border-radius: 2px;
+    width: 100%;
+    height: 30px; /* Larger touch area */
+    background: transparent;
     position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    left: 0;
     cursor: grab;
     touch-action: none;
-    /* Prevent pull-to-refresh */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Visual bar inside handle */
+.panel-handle::after {
+    content: '';
+    width: 40px;
+    height: 4px;
+    background: #d1d1d6;
+    border-radius: 2px;
 }
 
 .panel-handle:active {
     cursor: grabbing;
-    background: #d1d1d6;
+}
+
+.panel-handle:active::after {
+    background: #8e8e93;
 }
 
 /* Walking Time Card */

@@ -736,8 +736,8 @@ function initMap() {
         attributionControl: false
     }).setView([36.7700, 3.0553], 14); // Slightly closer zoom
 
-    // Add OpenStreetMap tiles with IndexedDB caching
-    L.tileLayer.cached('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Add OpenStreetMap tiles (Detailed view with street names, buildings, landmarks)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
     }).addTo(map);
@@ -827,82 +827,6 @@ if (stationSelectorTrigger) {
     stationSelectorTrigger.addEventListener('click', () => {
         showStationSelector();
     });
-}
-
-// Location Button - Center map on user location
-const locateBtn = document.getElementById('locate-btn');
-if (locateBtn) {
-    locateBtn.addEventListener('click', () => {
-        if (userLat && userLon) {
-            // Center map on user location with animation
-            map.flyTo([userLat, userLon], 16, {
-                duration: 1.5,
-                easeLinearity: 0.5
-            });
-
-            // Visual feedback
-            locateBtn.style.background = 'var(--primary-color)';
-            locateBtn.style.color = 'white';
-            setTimeout(() => {
-                locateBtn.style.background = 'white';
-                locateBtn.style.color = '#333';
-            }, 300);
-        } else {
-            // Try to get location if not available
-            refreshGeolocation();
-        }
-    });
-}
-
-// Compass Button - Always points north (decorative)
-const compassBtn = document.getElementById('compass-btn');
-if (compassBtn) {
-    compassBtn.addEventListener('click', () => {
-        // Reset map bearing to north (0 degrees)
-        map.setBearing(0);
-
-        // Visual feedback
-        compassBtn.style.transform = 'rotate(360deg) scale(1.1)';
-        setTimeout(() => {
-            compassBtn.style.transform = '';
-        }, 300);
-    });
-}
-
-// --- Draggable Arrivals Panel (Citymapper style - swipe whole panel) ---
-const arrivalsPanel = document.querySelector('.arrivals-panel');
-let panelStartY = 0;
-let panelStartScrollTop = 0;
-let isPanelCollapsed = false;
-
-if (arrivalsPanel) {
-    arrivalsPanel.addEventListener('touchstart', (e) => {
-        panelStartY = e.touches[0].clientY;
-        panelStartScrollTop = arrivalsPanel.scrollTop;
-    }, { passive: true });
-
-    arrivalsPanel.addEventListener('touchmove', (e) => {
-        const currentY = e.touches[0].clientY;
-        const deltaY = currentY - panelStartY;
-
-        // Only trigger collapse when panel is scrolled to top and swiping down
-        if (panelStartScrollTop === 0 && arrivalsPanel.scrollTop === 0) {
-            if (deltaY > 80 && !isPanelCollapsed) {
-                arrivalsPanel.classList.add('collapsed');
-                isPanelCollapsed = true;
-                console.log('📉 Panel collapsed');
-                setTimeout(() => { if (map) map.invalidateSize(); }, 350);
-            }
-        }
-
-        // Expand panel when swiping up while collapsed
-        if (isPanelCollapsed && deltaY < -50) {
-            arrivalsPanel.classList.remove('collapsed');
-            isPanelCollapsed = false;
-            console.log('📈 Panel expanded');
-            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
-        }
-    }, { passive: true });
 }
 
 // Init

@@ -105,15 +105,21 @@
 
         <!-- Arrivals Panel (Bottom 40%) -->
         <div id="arrivals-panel" class="arrivals-panel">
-            <div class="panel-handle"></div>
-
-            <div class="routes-header">
-                <h3>Next Arrivals</h3>
-                <span class="live-indicator">● Live</span>
+            <!-- Drag zone for collapse/expand -->
+            <div class="panel-drag-zone" id="panel-drag-zone">
+                <div class="panel-handle"></div>
             </div>
 
-            <div class="routes-list" id="routes-list">
-                <div class="loading-spinner"></div>
+            <!-- Scrollable content -->
+            <div class="panel-scroll-content">
+                <div class="routes-header">
+                    <h3>Next Arrivals</h3>
+                    <span class="live-indicator">● Live</span>
+                </div>
+
+                <div class="routes-list" id="routes-list">
+                    <div class="loading-spinner"></div>
+                </div>
             </div>
         </div>
 

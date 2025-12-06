@@ -38,17 +38,29 @@
 
 <body>
     <div class="app-container">
-        <header class="glass-header">
-            <div class="logo-area">
-                <h1 class="arabic-title">وصل الباص</h1>
-                <span class="live-badge">LIVE</span>
-            </div>
-            <div class="time-display" id="algiers-time">--:--</div>
+        <div class="logo-area">
+            <h1 class="arabic-title">وصل الباص</h1>
+            <span class="live-badge">LIVE</span>
+        </div>
         </header>
 
         <!-- Map View (Top 60%) -->
         <div id="map-view" class="map-view-container">
             <div id="map-container"></div>
+
+            <!-- Walking Time Badge (on map) -->
+            <div class="walking-time-badge" id="walking-time">
+                <svg class="walk-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M13.5 5.5C13.5 6.88071 12.3807 8 11 8C9.61929 8 8.5 6.88071 8.5 5.5C8.5 4.11929 9.61929 3 11 3C12.3807 3 13.5 4.11929 13.5 5.5Z"
+                        fill="currentColor" />
+                    <path d="M9.5 9L7 13L9 14L10 18L8 21H10L11.5 17.5L13 21H15L13 18L14 14L16 13L13.5 9H9.5Z"
+                        fill="currentColor" />
+                </svg>
+                <span id="walk-time-text">Calculating...</span>
+            </div>
+
             <div class="map-overlay-info">
                 <p id="map-distance" class="map-distance badge">📍 Locating...</p>
             </div>

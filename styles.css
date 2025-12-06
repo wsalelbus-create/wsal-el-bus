@@ -142,8 +142,10 @@ body {
 /* Walking Time Badge (Citymapper Style) */
 .walking-time-badge {
     position: absolute;
-    bottom: 20px;
-    left: 16px;
+    top: 70px;
+    /* Below header */
+    right: 16px;
+    /* Top-right corner */
     z-index: 90;
     background: white;
     padding: 10px 16px;

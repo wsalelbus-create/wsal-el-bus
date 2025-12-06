@@ -869,43 +869,40 @@ if (compassBtn) {
     });
 }
 
-// --- Draggable Arrivals Panel ---
+// --- Draggable Arrivals Panel (Citymapper style - swipe whole panel) ---
 const arrivalsPanel = document.querySelector('.arrivals-panel');
-const panelHandle = document.querySelector('.panel-handle');
-let isDragging = false;
-let startY = 0;
+let panelStartY = 0;
+let panelStartScrollTop = 0;
 let isPanelCollapsed = false;
 
-if (panelHandle && arrivalsPanel) {
-    panelHandle.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startY = e.touches[0].clientY;
-        e.preventDefault();
-    }, { passive: false }); // MUST be non-passive for preventDefault to work
+if (arrivalsPanel) {
+    arrivalsPanel.addEventListener('touchstart', (e) => {
+        panelStartY = e.touches[0].clientY;
+        panelStartScrollTop = arrivalsPanel.scrollTop;
+    }, { passive: true });
 
-    document.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-
+    arrivalsPanel.addEventListener('touchmove', (e) => {
         const currentY = e.touches[0].clientY;
-        const deltaY = currentY - startY;
+        const deltaY = currentY - panelStartY;
 
-        if (Math.abs(deltaY) > 50) {
-            if (deltaY > 0 && !isPanelCollapsed) {
+        // Only trigger collapse when panel is scrolled to top and swiping down
+        if (panelStartScrollTop === 0 && arrivalsPanel.scrollTop === 0) {
+            if (deltaY > 80 && !isPanelCollapsed) {
                 arrivalsPanel.classList.add('collapsed');
                 isPanelCollapsed = true;
-                console.log('📉 Panel collapsed - map expanded');
-            } else if (deltaY < 0 && isPanelCollapsed) {
-                arrivalsPanel.classList.remove('collapsed');
-                isPanelCollapsed = false;
-                console.log('📈 Panel expanded - map shrunk');
+                console.log('📉 Panel collapsed');
+                setTimeout(() => { if (map) map.invalidateSize(); }, 350);
             }
-            isDragging = false;
         }
-    });
 
-    document.addEventListener('touchend', () => {
-        isDragging = false;
-    });
+        // Expand panel when swiping up while collapsed
+        if (isPanelCollapsed && deltaY < -50) {
+            arrivalsPanel.classList.remove('collapsed');
+            isPanelCollapsed = false;
+            console.log('📈 Panel expanded');
+            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+        }
+    }, { passive: true });
 }
 
 // Init

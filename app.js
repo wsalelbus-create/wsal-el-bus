@@ -869,32 +869,30 @@ if (compassBtn) {
     });
 }
 
-// --- Prevent iOS Pull-to-Refresh ---
+// --- Prevent iOS Pull-to-Refresh (but allow normal scrolling) ---
 const arrivalsPanel = document.querySelector('.arrivals-panel');
 if (arrivalsPanel) {
     let startY = 0;
+    let startScrollTop = 0;
 
     arrivalsPanel.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].pageY;
-    }, { passive: false });
+        startY = e.touches[0].clientY;
+        startScrollTop = arrivalsPanel.scrollTop;
+    }, { passive: true });
 
     arrivalsPanel.addEventListener('touchmove', (e) => {
-        const currentY = e.touches[0].pageY;
-        const scrollTop = arrivalsPanel.scrollTop;
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
 
-        // If at top of scroll and trying to pull down, prevent default
-        if (scrollTop === 0 && currentY > startY) {
+        // ONLY prevent pull-to-refresh when:
+        // - Started at top (startScrollTop === 0)
+        // - Still at top (scrollTop === 0)
+        // - Pulling DOWN (deltaY > 0)
+        if (startScrollTop === 0 && arrivalsPanel.scrollTop === 0 && deltaY > 0) {
             e.preventDefault();
         }
     }, { passive: false });
 }
-
-// Prevent document-level overscroll
-document.body.addEventListener('touchmove', (e) => {
-    if (e.target === document.body) {
-        e.preventDefault();
-    }
-}, { passive: false });
 
 // Init
 initMap(); // Initialize map immediately (background)

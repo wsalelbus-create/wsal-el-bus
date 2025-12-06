@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Panel Swipe Test</title>
+    <title>Panel Swipe Test v2</title>
     <style>
         * {
             margin: 0;
@@ -43,15 +43,24 @@
             background: white;
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
+            display: flex;
+            flex-direction: column;
             transition: flex 0.3s ease;
-            overscroll-behavior-y: contain;
         }
 
         .panel.collapsed {
             flex: 2;
+        }
+
+        /* DRAG ZONE - This is the key! */
+        .drag-zone {
+            padding: 15px;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            touch-action: none;
+            /* Critical - prevents scroll capture */
+            cursor: grab;
+            flex-shrink: 0;
         }
 
         .handle {
@@ -59,16 +68,23 @@
             height: 5px;
             background: #ccc;
             border-radius: 3px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto;
+        }
+
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px 20px;
+            overscroll-behavior-y: contain;
         }
 
         .status {
-            background: #f0f0f0;
+            background: #e8f5e9;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
             font-family: monospace;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .item {
@@ -87,64 +103,67 @@
             <span>MAP AREA</span>
         </div>
         <div class="panel" id="panel">
-            <div class="handle"></div>
-            <div class="status" id="status">
-                Status: Ready<br>
-                Swipe down on panel to collapse (expand map)<br>
-                Swipe up to expand panel
+            <!-- Drag zone is separate from scroll content -->
+            <div class="drag-zone" id="dragZone">
+                <div class="handle"></div>
             </div>
-            <div class="item">Bus Route 1 - 5 min</div>
-            <div class="item">Bus Route 2 - 8 min</div>
-            <div class="item">Bus Route 3 - 12 min</div>
-            <div class="item">Bus Route 4 - 15 min</div>
-            <div class="item">Bus Route 5 - 20 min</div>
+            <div class="scroll-content">
+                <div class="status" id="status">
+                    Swipe down on the gray handle to collapse<br>
+                    Swipe up to expand
+                </div>
+                <div class="item">Bus Route 1 - 5 min</div>
+                <div class="item">Bus Route 2 - 8 min</div>
+                <div class="item">Bus Route 3 - 12 min</div>
+                <div class="item">Bus Route 4 - 15 min</div>
+                <div class="item">Bus Route 5 - 20 min</div>
+            </div>
         </div>
     </div>
 
     <script>
         const panel = document.getElementById('panel');
+        const dragZone = document.getElementById('dragZone');
         const status = document.getElementById('status');
         let startY = 0;
-        let startScrollTop = 0;
         let isCollapsed = false;
 
         function log(msg) {
             console.log(msg);
-            status.innerHTML = msg + '<br>Collapsed: ' + isCollapsed;
+            status.innerHTML = msg;
         }
 
-        log('✅ Script loaded');
+        log('✅ Ready - Swipe the gray handle bar');
 
-        panel.addEventListener('touchstart', (e) => {
+        // Touch events on the DRAG ZONE only (not the whole panel)
+        dragZone.addEventListener('touchstart', (e) => {
             startY = e.touches[0].clientY;
-            startScrollTop = panel.scrollTop;
-            log('👆 Touch start at Y=' + startY + ', scrollTop=' + startScrollTop);
-        }, { passive: true });
+            log('👆 Touch started at Y=' + startY);
+        }, { passive: false });
 
-        panel.addEventListener('touchmove', (e) => {
+        dragZone.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent any scroll behavior
             const currentY = e.touches[0].clientY;
             const deltaY = currentY - startY;
 
-            log('👉 Moving: deltaY=' + deltaY.toFixed(0) + ', scrollTop=' + panel.scrollTop);
+            log('👉 Dragging: deltaY=' + Math.round(deltaY));
 
-            // Only collapse when at top of scroll AND swiping down
-            if (startScrollTop === 0 && panel.scrollTop === 0 && deltaY > 80 && !isCollapsed) {
+            if (deltaY > 60 && !isCollapsed) {
                 panel.classList.add('collapsed');
                 isCollapsed = true;
-                log('📉 COLLAPSED!');
+                log('📉 COLLAPSED! Map expanded');
             }
 
-            // Expand when swiping up while collapsed
-            if (isCollapsed && deltaY < -50) {
+            if (deltaY < -40 && isCollapsed) {
                 panel.classList.remove('collapsed');
                 isCollapsed = false;
-                log('📈 EXPANDED!');
+                log('📈 EXPANDED! Panel restored');
             }
-        }, { passive: true });
+        }, { passive: false });
 
-        panel.addEventListener('touchend', () => {
-            log('👋 Touch end. Collapsed: ' + isCollapsed);
-        }, { passive: true });
+        dragZone.addEventListener('touchend', () => {
+            log(isCollapsed ? '✅ Panel is collapsed' : '✅ Panel is expanded');
+        });
     </script>
 </body>
 

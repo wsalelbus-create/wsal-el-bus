@@ -12,15 +12,6 @@ const ROUTE_PATHS = {
         { lat: 36.7770, lon: 3.0590, name: 'Rue Larbi Ben M\'hidi' },
         { lat: 36.7847, lon: 3.0625, name: 'Place des Martyrs' }
     ],
-
-    // --- DOM Elements ---
-    const stationSelectorTrigger = document.getElementById('station-selector-trigger');
-    const stationNameEl = document.getElementById('station-name');
-    const walkTimeText = document.getElementById('walk-time-text');
-    const routesListEl = document.getElementById('routes-list');
-
-    // Map Elements
-    const mapDistanceEl = document.getElementById('map-distance');
     '07': [ // Martyrs -> El Harrach
         { lat: 36.7847, lon: 3.0625, name: 'Place des Martyrs' },
         { lat: 36.7750, lon: 3.0700, name: 'Grande Poste' },
@@ -161,6 +152,20 @@ const ROUTE_PATHS = {
         { lat: 36.7550, lon: 3.0800, name: 'Gare Routière Caroubier' }
     ]
 };
+
+// --- Global State Variables ---
+let map = null;
+let mapInitialized = false;
+let currentStation = null;
+let userLat = null;
+let userLon = null;
+
+// --- DOM Elements ---
+const stationSelectorTrigger = document.getElementById('station-selector-trigger');
+const stationNameEl = document.getElementById('station-name');
+const walkTimeText = document.getElementById('walk-time-text');
+const routesListEl = document.getElementById('routes-list');
+const mapDistanceEl = document.getElementById('map-distance');
 
 // Calculate total distance for a route path
 function calculateRouteDistance(waypoints) {
@@ -640,26 +645,27 @@ function refreshGeolocation() {
 
                 // Show user-friendly error message
                 const walkTimeText = document.getElementById('walk-time-text');
-                let errorMsg = 'Location unavailable';
-
                 if (error.code === 1) {
-                    errorMsg = 'Permission denied';
+                    // Permission denied
+                    walkTimeText.textContent = 'Location permission denied';
+                    console.log('User denied geolocation permission');
                 } else if (error.code === 2) {
-                    errorMsg = 'Signal unavailable';
+                    // Position unavailable
+                    walkTimeText.textContent = 'Location unavailable';
+                    console.log('Position unavailable');
                 } else if (error.code === 3) {
-                    errorMsg = 'Location timeout';
+                    // Timeout
+                    walkTimeText.textContent = 'Location timeout - using default';
+                    console.log('Geolocation timeout');
                 }
-
-                if (walkTimeText) walkTimeText.textContent = errorMsg;
-                if (mapDistanceEl) mapDistanceEl.textContent = '📍 ' + errorMsg;
 
                 // Fallback to default station AFTER error
                 renderStation(currentStation);
             },
             {
-                enableHighAccuracy: false, // Try low accuracy for speed first?
-                timeout: 10000,            // 10 seconds timeout
-                maximumAge: 60000          // Accept 1 min old cache
+                enableHighAccuracy: true,  // Better accuracy on mobile
+                timeout: 15000,            // 15 seconds for mobile
+                maximumAge: 30000          // Accept 30-second cached position
             }
         );
     } else {

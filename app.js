@@ -640,27 +640,26 @@ function refreshGeolocation() {
 
                 // Show user-friendly error message
                 const walkTimeText = document.getElementById('walk-time-text');
+                let errorMsg = 'Location unavailable';
+
                 if (error.code === 1) {
-                    // Permission denied
-                    walkTimeText.textContent = 'Location permission denied';
-                    console.log('User denied geolocation permission');
+                    errorMsg = 'Permission denied';
                 } else if (error.code === 2) {
-                    // Position unavailable
-                    walkTimeText.textContent = 'Location unavailable';
-                    console.log('Position unavailable');
+                    errorMsg = 'Signal unavailable';
                 } else if (error.code === 3) {
-                    // Timeout
-                    walkTimeText.textContent = 'Location timeout - using default';
-                    console.log('Geolocation timeout');
+                    errorMsg = 'Location timeout';
                 }
+
+                if (walkTimeText) walkTimeText.textContent = errorMsg;
+                if (mapDistanceEl) mapDistanceEl.textContent = '📍 ' + errorMsg;
 
                 // Fallback to default station AFTER error
                 renderStation(currentStation);
             },
             {
-                enableHighAccuracy: true,  // Better accuracy on mobile
-                timeout: 15000,            // 15 seconds for mobile
-                maximumAge: 30000          // Accept 30-second cached position
+                enableHighAccuracy: false, // Try low accuracy for speed first?
+                timeout: 10000,            // 10 seconds timeout
+                maximumAge: 60000          // Accept 1 min old cache
             }
         );
     } else {

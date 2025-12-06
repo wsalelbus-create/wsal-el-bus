@@ -36,6 +36,9 @@ body {
     margin: 0;
     padding: 0;
     /* NO padding on body - fixed elements handle safe area themselves */
+    /* Disable pull-to-refresh */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .app-container {
@@ -46,6 +49,8 @@ body {
     background: #e5e5ea;
     /* Extend behind status bar */
     margin-top: 0;
+    /* Disable overscroll bounce */
+    overscroll-behavior: none;
 }
 
 /* =========================================
@@ -60,6 +65,8 @@ body {
     /* Ensure minimum height for map */
     z-index: 1;
     overflow: hidden;
+    /* Prevent overscroll bounce */
+    overscroll-behavior: none;
 }
 
 #map-container {

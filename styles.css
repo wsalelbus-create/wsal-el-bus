@@ -36,6 +36,9 @@ body {
     margin: 0;
     padding: 0;
     /* NO padding on body - fixed elements handle safe area themselves */
+    /* Disable pull-to-refresh on mobile */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .app-container {
@@ -46,6 +49,8 @@ body {
     background: #e5e5ea;
     /* Extend behind status bar */
     margin-top: 0;
+    /* Disable pull-to-refresh */
+    overscroll-behavior-y: contain;
 }
 
 /* =========================================
@@ -78,14 +83,12 @@ body {
 
 /* Header Floating on Map */
 .glass-header {
-    position: fixed;
-    /* Fixed to viewport - stays visible when scrolling */
+    position: absolute;
     top: calc(16px + env(safe-area-inset-top));
     /* Below status bar */
     left: 16px;
     right: 16px;
-    z-index: 300;
-    /* Higher than map controls */
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -320,6 +323,9 @@ body {
     position: relative;
     /* Create visual separation from map */
     margin-top: -20px;
+    /* Disable pull-to-refresh when scrolling */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Panel Handle */

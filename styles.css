@@ -65,6 +65,11 @@ body {
     /* Leaflet needs explicit height */
     background: #f2f2f7;
     /* Solid background - no transparency */
+    /* Performance optimizations */
+    transform: translate3d(0, 0, 0);
+    /* Force GPU acceleration */
+    will-change: transform;
+    /* Hint browser for optimization */
 }
 
 /* Header Floating on Map */

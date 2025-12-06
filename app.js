@@ -881,7 +881,7 @@ if (panelHandle && arrivalsPanel) {
         isDragging = true;
         startY = e.touches[0].clientY;
         e.preventDefault();
-    });
+    }, { passive: false }); // MUST be non-passive for preventDefault to work
 
     document.addEventListener('touchmove', (e) => {
         if (!isDragging) return;

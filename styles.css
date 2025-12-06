@@ -45,8 +45,10 @@ body {
     height: 100vh;
     position: relative;
     background: #e5e5ea;
-    /* Extend behind status bar */
     margin-top: 0;
+    /* Prevent pull-to-refresh */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* =========================================
@@ -58,9 +60,11 @@ body {
     position: relative;
     width: 100%;
     min-height: 360px;
-    /* Ensure minimum height for map */
     z-index: 1;
     overflow: hidden;
+    /* Prevent pull-to-refresh on map */
+    overscroll-behavior: none;
+    touch-action: pan-x pan-y;
 }
 
 #map-container {
@@ -316,7 +320,9 @@ body {
     position: relative;
     margin-top: -20px;
     transition: flex 0.3s ease;
-    /* Smooth transition */
+    /* Prevent pull-to-refresh */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Collapsed state - map expanded to 80% */

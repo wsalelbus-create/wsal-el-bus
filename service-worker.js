@@ -1,13 +1,11 @@
-const CACHE_NAME = 'dz-bus-tracker-v1.11-tiles';
-const TILE_CACHE_NAME = 'osm-tiles-v1';
+const CACHE_NAME = 'dz-bus-tracker-v1.12-tiles';
+const TILE_CACHE_NAME = 'osm-tiles-v2';
 const STATIC_CACHE = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/manifest.json',
-    '/images/icon-192.png',
-    '/images/icon-512.png'
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './weather.js'
 ];
 
 // Maximum number of tiles to cache (prevent unlimited growth)
@@ -15,11 +13,11 @@ const MAX_TILE_CACHE_SIZE = 500;
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
+    console.log('🔧 Service Worker: Installing...');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Service Worker: Caching static files');
+                console.log('📦 Service Worker: Caching static files');
                 return cache.addAll(STATIC_CACHE);
             })
             .then(() => self.skipWaiting())
@@ -28,13 +26,13 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
+    console.log('✅ Service Worker: Activating...');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cache => {
                     if (cache !== CACHE_NAME && cache !== TILE_CACHE_NAME) {
-                        console.log('Service Worker: Clearing old cache:', cache);
+                        console.log('🗑️ Service Worker: Clearing old cache:', cache);
                         return caches.delete(cache);
                     }
                 })
@@ -48,7 +46,9 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
     // Check if this is an OpenStreetMap tile request
-    if (url.hostname.includes('tile.openstreetmap.org')) {
+    // OSM tiles: https://a.tile.openstreetmap.org/14/8192/5461.png
+    if (url.hostname.includes('tile.openstreetmap.org') ||
+        url.pathname.match(/\/\d+\/\d+\/\d+\.png$/)) {
         event.respondWith(handleTileRequest(event.request));
         return;
     }
@@ -78,7 +78,7 @@ self.addEventListener('fetch', (event) => {
             })
             .catch(() => {
                 // Return offline page if available
-                return caches.match('/index.html');
+                return caches.match('./index.html');
             })
     );
 });
@@ -90,13 +90,17 @@ async function handleTileRequest(request) {
     // Try to get from cache first
     const cachedResponse = await cache.match(request);
     if (cachedResponse) {
-        console.log('Tile served from cache:', request.url);
+        console.log('🗺️ Tile from cache:', request.url);
         return cachedResponse;
     }
 
     // Not in cache, fetch from network
     try {
-        const networkResponse = await fetch(request);
+        console.log('📥 Fetching tile:', request.url);
+        const networkResponse = await fetch(request, {
+            mode: 'cors',
+            credentials: 'omit'
+        });
 
         if (networkResponse && networkResponse.status === 200) {
             // Clone before caching
@@ -105,13 +109,13 @@ async function handleTileRequest(request) {
             // Cache the tile
             await cacheTileWithLimit(cache, request, responseToCache);
 
-            console.log('Tile fetched and cached:', request.url);
+            console.log('✅ Tile cached:', request.url);
             return networkResponse;
         }
 
         return networkResponse;
     } catch (error) {
-        console.error('Tile fetch failed:', error);
+        console.error('❌ Tile fetch failed:', error);
         // Return a placeholder or cached version if available
         return new Response('Tile unavailable', { status: 503 });
     }
@@ -128,7 +132,7 @@ async function cacheTileWithLimit(cache, request, response) {
     // If we exceed the limit, remove oldest tiles
     if (keys.length > MAX_TILE_CACHE_SIZE) {
         const tilesToRemove = keys.length - MAX_TILE_CACHE_SIZE;
-        console.log(`Removing ${tilesToRemove} old tiles from cache`);
+        console.log(`🗑️ Removing ${tilesToRemove} old tiles from cache`);
 
         // Remove the oldest tiles (first in the list)
         for (let i = 0; i < tilesToRemove; i++) {

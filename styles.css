@@ -135,13 +135,13 @@ body {
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
+    color: #333;
 }
 
 /* Walking Time Badge (Citymapper Style) */
 .walking-time-badge {
-    position: absolute;
+    position: fixed;
+    /* Fixed to viewport */
     top: 70px;
     /* Below header */
     right: 16px;

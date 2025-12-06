@@ -156,7 +156,7 @@ const ROUTE_PATHS = {
 // --- Global State Variables ---
 let map = null;
 let mapInitialized = false;
-let currentStation = null;
+let currentStation = null; // Will be set after STATIONS is defined
 let userLat = null;
 let userLon = null;
 
@@ -296,10 +296,8 @@ const STATIONS = [
     }
 ];
 
-// State
-let currentStation = STATIONS[0]; // Default
-let userLat = null;
-let userLon = null;
+// Initialize default station (now that STATIONS is defined)
+currentStation = STATIONS[0];
 
 // TESTING: Set to true to simulate being in Algiers (for testing from outside Algeria)
 const USE_FAKE_LOCATION = false;
@@ -308,14 +306,8 @@ const FAKE_LOCATION = {
     lon: 3.0560000
 };
 
-// DOM Elements
+// Additional DOM Elements (others declared at top)
 const timeDisplay = document.getElementById('algiers-time');
-const stationNameEl = document.getElementById('station-name');
-const stationAddrEl = document.getElementById('addr-text');
-const stationImgEl = document.getElementById('current-station-img');
-const routesListEl = document.getElementById('routes-list');
-const btnNearest = document.getElementById('btn-nearest');
-const btnList = document.getElementById('btn-list');
 
 // --- Time Logic ---
 function updateAlgiersTime() {

@@ -736,8 +736,8 @@ function initMap() {
         attributionControl: false
     }).setView([36.7700, 3.0553], 14); // Slightly closer zoom
 
-    // Add OpenStreetMap tiles (Detailed view with street names, buildings, landmarks)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Add OpenStreetMap tiles with IndexedDB caching
+    L.tileLayer.cached('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
     }).addTo(map);
@@ -829,36 +829,44 @@ if (stationSelectorTrigger) {
     });
 }
 
-// --- Draggable Panel (Safari-compatible) ---
-const arrivalsPanel = document.querySelector('.arrivals-panel');
-const panelDragZone = document.querySelector('.panel-drag-zone');
-let panelStartY = 0;
-let isPanelCollapsed = false;
+// Location Button - Center map on user location
+const locateBtn = document.getElementById('locate-btn');
+if (locateBtn) {
+    locateBtn.addEventListener('click', () => {
+        if (userLat && userLon) {
+            // Center map on user location with animation
+            map.flyTo([userLat, userLon], 16, {
+                duration: 1.5,
+                easeLinearity: 0.5
+            });
 
-if (arrivalsPanel && panelDragZone) {
-    panelDragZone.addEventListener('touchstart', (e) => {
-        panelStartY = e.touches[0].clientY;
-    }, { passive: false });
-
-    panelDragZone.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const currentY = e.touches[0].clientY;
-        const deltaY = currentY - panelStartY;
-
-        if (deltaY > 60 && !isPanelCollapsed) {
-            arrivalsPanel.classList.add('collapsed');
-            isPanelCollapsed = true;
-            console.log('📉 Panel collapsed');
-            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+            // Visual feedback
+            locateBtn.style.background = 'var(--primary-color)';
+            locateBtn.style.color = 'white';
+            setTimeout(() => {
+                locateBtn.style.background = 'white';
+                locateBtn.style.color = '#333';
+            }, 300);
+        } else {
+            // Try to get location if not available
+            refreshGeolocation();
         }
+    });
+}
 
-        if (deltaY < -40 && isPanelCollapsed) {
-            arrivalsPanel.classList.remove('collapsed');
-            isPanelCollapsed = false;
-            console.log('📈 Panel expanded');
-            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
-        }
-    }, { passive: false });
+// Compass Button - Always points north (decorative)
+const compassBtn = document.getElementById('compass-btn');
+if (compassBtn) {
+    compassBtn.addEventListener('click', () => {
+        // Reset map bearing to north (0 degrees)
+        map.setBearing(0);
+
+        // Visual feedback
+        compassBtn.style.transform = 'rotate(360deg) scale(1.1)';
+        setTimeout(() => {
+            compassBtn.style.transform = '';
+        }, 300);
+    });
 }
 
 // Init

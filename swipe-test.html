@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Panel Swipe Test v2</title>
+    <title>Panel Swipe Test v3</title>
     <style>
         * {
             margin: 0;
@@ -27,7 +27,7 @@
         }
 
         .map {
-            flex: 6;
+            flex: 1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
@@ -35,30 +35,31 @@
             color: white;
             font-size: 24px;
             font-family: sans-serif;
-            transition: flex 0.3s ease;
         }
 
+        /* Panel uses HEIGHT not FLEX for Safari compatibility */
         .panel {
-            flex: 4;
+            height: 40vh;
+            /* 40% of viewport height */
             background: white;
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
-            transition: flex 0.3s ease;
+            transition: height 0.3s ease;
+            position: relative;
         }
 
         .panel.collapsed {
-            flex: 2;
+            height: 20vh;
+            /* 20% when collapsed */
         }
 
-        /* DRAG ZONE - This is the key! */
         .drag-zone {
             padding: 15px;
             background: white;
             border-radius: 24px 24px 0 0;
             touch-action: none;
-            /* Critical - prevents scroll capture */
             cursor: grab;
             flex-shrink: 0;
         }
@@ -100,23 +101,20 @@
 <body>
     <div class="container">
         <div class="map" id="map">
-            <span>MAP AREA</span>
+            <span>MAP AREA (expands when panel collapses)</span>
         </div>
         <div class="panel" id="panel">
-            <!-- Drag zone is separate from scroll content -->
             <div class="drag-zone" id="dragZone">
                 <div class="handle"></div>
             </div>
             <div class="scroll-content">
                 <div class="status" id="status">
-                    Swipe down on the gray handle to collapse<br>
+                    Swipe down on gray bar to collapse<br>
                     Swipe up to expand
                 </div>
                 <div class="item">Bus Route 1 - 5 min</div>
                 <div class="item">Bus Route 2 - 8 min</div>
                 <div class="item">Bus Route 3 - 12 min</div>
-                <div class="item">Bus Route 4 - 15 min</div>
-                <div class="item">Bus Route 5 - 20 min</div>
             </div>
         </div>
     </div>
@@ -129,40 +127,36 @@
         let isCollapsed = false;
 
         function log(msg) {
-            console.log(msg);
             status.innerHTML = msg;
         }
 
-        log('✅ Ready - Swipe the gray handle bar');
+        log('✅ Ready - Swipe the gray bar');
 
-        // Touch events on the DRAG ZONE only (not the whole panel)
         dragZone.addEventListener('touchstart', (e) => {
             startY = e.touches[0].clientY;
-            log('👆 Touch started at Y=' + startY);
+            log('👆 Touch started');
         }, { passive: false });
 
         dragZone.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Prevent any scroll behavior
+            e.preventDefault();
             const currentY = e.touches[0].clientY;
             const deltaY = currentY - startY;
-
-            log('👉 Dragging: deltaY=' + Math.round(deltaY));
 
             if (deltaY > 60 && !isCollapsed) {
                 panel.classList.add('collapsed');
                 isCollapsed = true;
-                log('📉 COLLAPSED! Map expanded');
+                log('📉 COLLAPSED! Panel height: ' + panel.offsetHeight + 'px');
             }
 
             if (deltaY < -40 && isCollapsed) {
                 panel.classList.remove('collapsed');
                 isCollapsed = false;
-                log('📈 EXPANDED! Panel restored');
+                log('📈 EXPANDED! Panel height: ' + panel.offsetHeight + 'px');
             }
         }, { passive: false });
 
         dragZone.addEventListener('touchend', () => {
-            log(isCollapsed ? '✅ Panel is collapsed' : '✅ Panel is expanded');
+            log(isCollapsed ? '✅ Collapsed (20vh)' : '✅ Expanded (40vh)');
         });
     </script>
 </body>

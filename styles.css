@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --primary-color: #35C759;
     /* Citymapper Green */
     --etusa-blue: #00d2ff;
@@ -308,348 +308,306 @@ body {
    3. ARRIVALS PANEL (Bottom 40%)
    ========================================= */
 .arrivals-panel {
-/* =========================================
+
+    /* =========================================
    3. ARRIVALS PANEL - SAFARI FIX
-   ========================================= */
+    .panel-scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 16px 16px 16px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        overscroll-behavior-y: contain;
+    }
 
-/* COPY THIS ENTIRE CONTENT AND REPLACE THE ARRIVALS PANEL SECTION IN YOUR styles.css */
-/* Find the section starting with "3. ARRIVALS PANEL" and replace it with this */
+    /* Walking Time Card */
+    .walking-time {
+        background: var(--primary-color);
+        /* Green background like Citymapper 'Walk' */
+        color: white;
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin-top: 20px;
+        /* Space from controls overlap */
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(53, 199, 89, 0.3);
+    }
 
-.arrivals-panel {
-    height: 40vh;
-    /* Use height instead of flex for Safari */
-    background: white;
-    border-radius: 24px 24px 0 0;
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin-top: -20px;
-    transition: height 0.3s ease;
-}
+    .walk-icon {
+        font-size: 1.3rem;
+    }
 
-/* Collapsed state - map expanded */
-.arrivals-panel.collapsed {
-    height: 20vh;
-}
+    /* Routes List */
+    .routes-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
 
-/* Drag Zone at top of panel */
-.panel-drag-zone {
-    padding: 12px 16px;
-    touch-action: none;
-    cursor: grab;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .routes-header h3 {
+        font-size: 1.1rem;
+        color: var(--text-main);
+    }
 
-/* Visual handle bar */
-.panel-handle {
-    width: 40px;
-    height: 4px;
-    background: #d1d1d6;
-    border-radius: 2px;
-}
+    .live-indicator {
+        font-size: 0.75rem;
+        color: var(--primary-color);
+        font-weight: 700;
+        background: #f0fdf4;
+        padding: 4px 8px;
+        border-radius: 10px;
+    }
 
-/* Scroll content below drag zone */
-.panel-scroll-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 16px 16px 16px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
-    overscroll-behavior-y: contain;
-}
-/* Walking Time Card */
-.walking-time {
-    background: var(--primary-color);
-    /* Green background like Citymapper 'Walk' */
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-top: 20px;
-    /* Space from controls overlap */
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(53, 199, 89, 0.3);
-}
+    .routes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 20px;
+    }
 
-.walk-icon {
-    font-size: 1.3rem;
-}
+    /* Route Item Card */
+    .route-item {
+        background: white;
+        border: 1px solid #f0f0f0;
+        padding: 14px 16px;
+        border-radius: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s;
+    }
 
-/* Routes List */
-.routes-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
+    .route-item:active {
+        transform: scale(0.98);
+        background: #fafafa;
+    }
 
-.routes-header h3 {
-    font-size: 1.1rem;
-    color: var(--text-main);
-}
+    .route-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+    }
 
-.live-indicator {
-    font-size: 0.75rem;
-    color: var(--primary-color);
-    font-weight: 700;
-    background: #f0fdf4;
-    padding: 4px 8px;
-    border-radius: 10px;
-}
+    .route-number {
+        background: var(--etusa-blue);
+        color: white;
+        font-weight: 800;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 1rem;
+        min-width: 50px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 210, 255, 0.3);
+    }
 
-.routes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-bottom: 20px;
-}
+    .route-dest {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text-main);
+        line-height: 1.2;
+    }
 
-/* Route Item Card */
-.route-item {
-    background: white;
-    border: 1px solid #f0f0f0;
-    padding: 14px 16px;
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s;
-}
+    /* Arrival Time Styling */
+    .route-time {
+        text-align: right;
+        min-width: 70px;
+    }
 
-.route-item:active {
-    transform: scale(0.98);
-    background: #fafafa;
-}
+    .time-big {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        /* Green time */
+        line-height: 1;
+    }
 
-.route-info {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex: 1;
-}
-
-.route-number {
-    background: var(--etusa-blue);
-    color: white;
-    font-weight: 800;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 1rem;
-    min-width: 50px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 210, 255, 0.3);
-}
-
-.route-dest {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text-main);
-    line-height: 1.2;
-}
-
-/* Arrival Time Styling */
-.route-time {
-    text-align: right;
-    min-width: 70px;
-}
-
-.time-big {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--primary-color);
-    /* Green time */
-    line-height: 1;
-}
-
-.time-unit {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-}
+    .time-unit {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
 
 
-/* =========================================
+    /* =========================================
    4. MODALS & UTILS
    ========================================= */
 
-/* Station Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: flex-end;
-    /* Sheet style */
-    z-index: 1000;
-    animation: fadeIn 0.2s ease;
-}
-
-.modal-overlay.hidden {
-    display: none;
-}
-
-.modal-content {
-    width: 100%;
-    height: 80%;
-    /* Takes up most of screen */
-    background: white;
-    border-radius: 24px 24px 0 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    animation: slideUp 0.3s ease;
-}
-
-.modal-header {
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.modal-header h3 {
-    font-size: 1.2rem;
-    color: var(--text-main);
-}
-
-.close-btn {
-    background: #f2f2f7;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.station-search {
-    margin: 16px;
-    padding: 12px 16px;
-    background: #f2f2f7;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-family: 'Outfit', sans-serif;
-    outline: none;
-}
-
-.station-search:focus {
-    background: #e5e5ea;
-    box-shadow: 0 0 0 2px var(--primary-color);
-}
-
-.station-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 16px 20px;
-}
-
-.station-list-item {
-    padding: 16px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
-
-.station-list-item:active {
-    background: #f9f9f9;
-}
-
-.station-list-item h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 4px;
-}
-
-.station-list-item p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+    /* Station Modal */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: flex-end;
+        /* Sheet style */
+        z-index: 1000;
+        animation: fadeIn 0.2s ease;
     }
 
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
+    .modal-overlay.hidden {
+        display: none;
     }
 
-    to {
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.05);
-        opacity: 0.8;
+    .modal-content {
+        width: 100%;
+        height: 80%;
+        /* Takes up most of screen */
+        background: white;
+        border-radius: 24px 24px 0 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        animation: slideUp 0.3s ease;
     }
 
-    100% {
-        transform: scale(1);
-        opacity: 1;
+    .modal-header {
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
     }
-}
 
-.loading-spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #f0f0f0;
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+    .modal-header h3 {
+        font-size: 1.2rem;
+        color: var(--text-main);
     }
-}
 
-/* Footer (Hidden mostly but basic styles) */
-.glass-footer {
-    display: none;
-}
+    .close-btn {
+        background: #f2f2f7;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
 
-.version-footer {
-    text-align: center;
-    padding: 20px;
-    color: #ccc;
-    font-size: 0.7rem;
-}
+    .station-search {
+        margin: 16px;
+        padding: 12px 16px;
+        background: #f2f2f7;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-family: 'Outfit', sans-serif;
+        outline: none;
+    }
+
+    .station-search:focus {
+        background: #e5e5ea;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .station-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 16px 20px;
+    }
+
+    .station-list-item {
+        padding: 16px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .station-list-item:active {
+        background: #f9f9f9;
+    }
+
+    .station-list-item h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 4px;
+    }
+
+    .station-list-item p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .loading-spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid #f0f0f0;
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Footer (Hidden mostly but basic styles) */
+    .glass-footer {
+        display: none;
+    }
+
+    .version-footer {
+        text-align: center;
+        padding: 20px;
+        color: #ccc;
+        font-size: 0.7rem;
+    }

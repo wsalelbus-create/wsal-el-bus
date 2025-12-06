@@ -30,10 +30,14 @@ body {
     font-family: 'Outfit', sans-serif;
     background: #f2f2f7;
     color: var(--text-main);
-    width: 360px;
-    height: 600px;
-    /* Dev container size */
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
+    /* Support for notched devices */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .app-container {
@@ -42,6 +46,8 @@ body {
     height: 100vh;
     position: relative;
     background: #e5e5ea;
+    /* Extend behind status bar */
+    margin-top: calc(-1 * env(safe-area-inset-top));
 }
 
 /* =========================================
@@ -75,15 +81,14 @@ body {
 /* Header Floating on Map */
 .glass-header {
     position: absolute;
-    top: 16px;
+    top: calc(16px + env(safe-area-inset-top));
+    /* Below status bar */
     left: 16px;
     right: 16px;
     z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* No background, just text shadow/badges for clean map look? 
-       Actually Citymapper has a clean white search bar. We'll simulate a clean header */
 }
 
 /* Logo Area */

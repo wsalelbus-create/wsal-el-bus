@@ -869,6 +869,33 @@ if (compassBtn) {
     });
 }
 
+// --- Prevent iOS Pull-to-Refresh ---
+const arrivalsPanel = document.querySelector('.arrivals-panel');
+if (arrivalsPanel) {
+    let startY = 0;
+
+    arrivalsPanel.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].pageY;
+    }, { passive: false });
+
+    arrivalsPanel.addEventListener('touchmove', (e) => {
+        const currentY = e.touches[0].pageY;
+        const scrollTop = arrivalsPanel.scrollTop;
+
+        // If at top of scroll and trying to pull down, prevent default
+        if (scrollTop === 0 && currentY > startY) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
+// Prevent document-level overscroll
+document.body.addEventListener('touchmove', (e) => {
+    if (e.target === document.body) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

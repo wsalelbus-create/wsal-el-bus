@@ -829,6 +829,38 @@ if (stationSelectorTrigger) {
     });
 }
 
+// --- Draggable Arrivals Panel (Citymapper style) ---
+const arrivalsPanel = document.querySelector('.arrivals-panel');
+const dragZone = document.getElementById('panel-drag-zone');
+let panelStartY = 0;
+let isPanelCollapsed = false;
+
+if (dragZone && arrivalsPanel) {
+    dragZone.addEventListener('touchstart', (e) => {
+        panelStartY = e.touches[0].clientY;
+    }, { passive: false });
+
+    dragZone.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - panelStartY;
+
+        if (deltaY > 60 && !isPanelCollapsed) {
+            arrivalsPanel.classList.add('collapsed');
+            isPanelCollapsed = true;
+            console.log('📉 Panel collapsed');
+            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+        }
+
+        if (deltaY < -40 && isPanelCollapsed) {
+            arrivalsPanel.classList.remove('collapsed');
+            isPanelCollapsed = false;
+            console.log('📈 Panel expanded');
+            setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+        }
+    }, { passive: false });
+}
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

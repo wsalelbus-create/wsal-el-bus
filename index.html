@@ -53,8 +53,8 @@
             <p id="map-distance" style="display: none;"></p>
         </div>
 
-        <!-- Walking Time Badge (floating above map) -->
-        <div class="walking-time-badge" id="walking-time">
+        <!-- Walking Time Badge (floating above map) - Hidden initially -->
+        <div class="walking-time-badge hidden" id="walking-time">
             <svg class="walk-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -102,8 +102,20 @@
             </div>
         </div>
 
-        <!-- Arrivals Panel (Bottom 40%) -->
-        <div id="arrivals-panel" class="arrivals-panel">
+        <!-- Mode Toggle Buttons (Initial State) -->
+        <div id="mode-toggle-container" class="mode-toggle-container">
+            <button id="bus-mode-btn" class="mode-btn">
+                <span class="mode-icon">🚌</span>
+                <span class="mode-label">Bus</span>
+            </button>
+            <button id="walk-mode-btn" class="mode-btn">
+                <span class="mode-icon">🚶</span>
+                <span class="mode-label">Walk</span>
+            </button>
+        </div>
+
+        <!-- Arrivals Panel (Bottom 40%) - Hidden initially -->
+        <div id="arrivals-panel" class="arrivals-panel hidden">
 
             <div class="routes-header">
                 <h3>Next Arrivals</h3>

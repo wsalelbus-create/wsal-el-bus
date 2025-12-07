@@ -26,8 +26,6 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-
-
 body {
     font-family: 'Outfit', sans-serif;
     background: #f2f2f7;
@@ -37,9 +35,7 @@ body {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    /* Disable elastic bounce and pull-to-refresh */
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
+    /* NO padding on body - fixed elements handle safe area themselves */
 }
 
 .app-container {
@@ -48,9 +44,8 @@ body {
     height: 100vh;
     position: relative;
     background: #e5e5ea;
+    /* Extend behind status bar */
     margin-top: 0;
-    /* Disable pull-to-refresh and elastic bounce */
-    overscroll-behavior: none;
 }
 
 /* =========================================
@@ -321,10 +316,8 @@ body {
     /* Safe area for bottom */
     overflow-y: auto;
     position: relative;
+    /* Create visual separation from map */
     margin-top: -20px;
-    /* Disable elastic bounce */
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* Panel Handle */

@@ -52,8 +52,8 @@ body {
    1. TOP MAP SECTION (60%)
    ========================================= */
 .map-view-container {
-    flex: 6;
-    /* 60% approx */
+    height: 60vh;
+    /* 60% of viewport height */
     position: relative;
     width: 100%;
     min-height: 360px;
@@ -62,6 +62,16 @@ body {
     overflow: hidden;
     padding-bottom: 40px;
     /* Extend map down - bar will overlap this */
+    transition: height 0.3s ease;
+    /* Smooth expansion */
+    cursor: pointer;
+    /* Indicate clickable */
+}
+
+/* Expanded map state - 80% */
+.map-view-container.expanded {
+    height: 80vh;
+    /* 80% when expanded */
 }
 
 #map-container {
@@ -309,8 +319,8 @@ body {
    3. ARRIVALS PANEL (Bottom 40%)
    ========================================= */
 .arrivals-panel {
-    flex: 4;
-    /* 40% approx */
+    height: 40vh;
+    /* 40% of viewport height */
     background: white;
     border-radius: 24px 24px 0 0;
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
@@ -322,6 +332,14 @@ body {
     /* Safe area for bottom */
     overflow-y: auto;
     position: relative;
+    transition: height 0.3s ease;
+    /* Smooth resize */
+}
+
+/* Collapsed arrivals when map expanded */
+.arrivals-panel.collapsed {
+    height: 20vh;
+    /* 20% when map expanded */
 }
 
 /* Walking Time Card */

@@ -523,13 +523,11 @@ function updateWalkingTime(station) {
     console.log(`  Actual walking distance: ${actualWalkingDistance.toFixed(3)} km`);
     console.log(`  Walking time: ${walkingTimeMinutes} minutes`);
 
-    // Format the text
+    // Format the text - just the number
     if (walkingTimeMinutes < 1) {
-        walkTimeText.textContent = 'Less than 1 min walk';
-    } else if (walkingTimeMinutes === 1) {
-        walkTimeText.textContent = '1 min walk';
+        walkTimeText.textContent = '<1';
     } else {
-        walkTimeText.textContent = `${walkingTimeMinutes} min walk`;
+        walkTimeText.textContent = `${walkingTimeMinutes}`;
     }
 }
 
@@ -869,32 +867,6 @@ if (compassBtn) {
     });
 }
 
-// Map Expansion Toggle - Click map to expand/collapse
-const mapViewContainer = document.querySelector('.map-view-container');
-const arrivalsPanel = document.querySelector('.arrivals-panel');
-
-if (mapViewContainer && arrivalsPanel) {
-    mapViewContainer.addEventListener('click', (e) => {
-        // Don't toggle if clicking on controls
-        if (e.target.closest('.glass-header') ||
-            e.target.closest('.walking-time-badge') ||
-            e.target.closest('.map-controls-stack')) {
-            return;
-        }
-
-        // Toggle expanded state
-        mapViewContainer.classList.toggle('expanded');
-        arrivalsPanel.classList.toggle('collapsed');
-
-        // Invalidate map size after transition
-        setTimeout(() => {
-            if (map) {
-                map.invalidateSize();
-            }
-        }, 300);
-    });
-}
-
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();
@@ -906,3 +878,28 @@ if (window.WeatherModule) {
 
 // Refresh arrivals every minute
 setInterval(() => renderRoutes(currentStation), 60000);
+
+// ===== PREVENT PULL-TO-REFRESH =====
+// This is the standard solution to disable pull-to-refresh on mobile browsers
+let lastTouchY = 0;
+let preventPullToRefresh = false;
+
+document.body.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    lastTouchY = e.touches[0].clientY;
+
+    // Check if we're at the top of the scrollable area
+    const scrollableElement = document.querySelector('.arrivals-panel');
+    preventPullToRefresh = scrollableElement && scrollableElement.scrollTop === 0;
+}, { passive: false });
+
+document.body.addEventListener('touchmove', (e) => {
+    const touchY = e.touches[0].clientY;
+    const touchYDelta = touchY - lastTouchY;
+    lastTouchY = touchY;
+
+    // If pulling down when already at top, prevent default
+    if (preventPullToRefresh && touchYDelta > 0) {
+        e.preventDefault();
+    }
+}, { passive: false });

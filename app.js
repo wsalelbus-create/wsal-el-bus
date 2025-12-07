@@ -889,7 +889,6 @@ if (mapViewContainer && arrivalsPanel) {
 }
 
 // Init
-initModeToggles(); // Initialize mode buttons immediately
 initMap(); // Initialize map immediately (background)
 initGeolocation();
 
@@ -900,65 +899,3 @@ if (window.WeatherModule) {
 
 // Refresh arrivals every minute
 setInterval(() => renderRoutes(currentStation), 60000);
-
-// --- Mode Toggle Logic ---
-function initModeToggles() {
-    const busBtn = document.getElementById('bus-mode-btn');
-    const walkBtn = document.getElementById('walk-mode-btn');
-
-    // Debug check
-    console.log('Initializing mode toggles', { busBtn, walkBtn });
-
-    if (busBtn) {
-        busBtn.addEventListener('click', (e) => {
-            console.log('Bus mode clicked');
-            e.stopPropagation(); // Prevent map click
-            setAppMode('bus');
-        });
-    }
-
-    if (walkBtn) {
-        walkBtn.addEventListener('click', (e) => {
-            console.log('Walk mode clicked');
-            e.stopPropagation(); // Prevent map click
-            setAppMode('walk');
-        });
-    }
-}
-
-function setAppMode(mode) {
-    console.log('Setting app mode:', mode);
-    appMode = mode;
-    const modeContainer = document.getElementById('mode-toggle-container');
-    const arrivalsPanel = document.getElementById('arrivals-panel');
-    const walkingBadge = document.getElementById('walking-time-badge');
-
-    // Hide toggle container with fade
-    if (modeContainer) {
-        modeContainer.style.opacity = '0';
-        setTimeout(() => modeContainer.classList.add('hidden'), 200);
-    }
-
-    if (mode === 'bus') {
-        // Show Bus UI
-        if (arrivalsPanel) arrivalsPanel.classList.remove('hidden');
-        if (walkingBadge) walkingBadge.classList.add('hidden');
-
-        // Remove route line if any
-        if (routeLine && map) map.removeLayer(routeLine);
-
-        // Ensure data is rendered
-        if (currentStation) renderRoutes(currentStation);
-
-    } else if (mode === 'walk') {
-        // Show Walk UI
-        if (arrivalsPanel) arrivalsPanel.classList.add('hidden');
-        if (walkingBadge) walkingBadge.classList.remove('hidden');
-
-        // Draw route line
-        updateMap();
-
-        // Update walking time data
-        if (currentStation) updateWalkingTime(currentStation);
-    }
-}

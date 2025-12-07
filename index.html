@@ -100,152 +100,130 @@
                 </div>
                 <div class="station-select-icon">⋮</div>
             </div>
-            <!-- Mode Toggle Buttons (Citymapper Style) -->
-            <div id="mode-toggle-container" class="mode-toggle-container">
-                <button id="bus-mode-btn" class="mode-btn">
-                    <div class="mode-icon-wrapper">
-                        <!-- Bus Icon -->
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="mode-icon">
-                            <path
-                                d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z" />
-                        </svg>
-                    </div>
-                    <span class="mode-label">Bus</span>
-                </button>
-                <button id="walk-mode-btn" class="mode-btn">
-                    <div class="mode-icon-wrapper">
-                        <!-- Walk Icon -->
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="mode-icon">
-                            <path
-                                d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.2-2L14 10c.5 0 1 .5 1 1v6h2v-6c0-1.1-.9-2-2-2l-4-1.6c-.6-.2-1.3.2-1.4.8-.2.5.2 1.1.7 1.3l2.8 1.1L9.8 8.9z" />
-                        </svg>
-                    </div>
-                    <span class="mode-label">Walk</span>
-                </button>
+        </div>
+
+        <!-- Arrivals Panel (Bottom 40%) -->
+        <div id="arrivals-panel" class="arrivals-panel">
+
+            <div class="routes-header">
+                <h3>Next Arrivals</h3>
+                <span class="live-indicator">● Live</span>
             </div>
 
-            <!-- Arrivals Panel (Bottom 40%) - Initially Hidden -->
-            <div id="arrivals-panel" class="arrivals-panel hidden">
-
-                <div class="routes-header">
-                    <h3>Next Arrivals</h3>
-                    <span class="live-indicator">● Live</span>
-                </div>
-
-                <div class="routes-list" id="routes-list">
-                    <div class="loading-spinner"></div>
-                </div>
-            </div>
-
-            <!-- Simplified Footer (Inside Arrivals or removed? User requested citymapper style which usually has bottom nav, but 60/40 implies list goes to bottom. I will keep a minimal footer inside the panel if needed, or remove if distinct "Get Me Home" buttons are preferred. For now, hiding the old footer as it conflicts with the bottom sheet concept.) -->
-
-            <!-- Version Footer -->
-            <div class="version-footer">
-                <div class="version-text">Wsal El Bus 1.10a</div>
-                <div class="tagline">Made with ❤️ for Algiers commuters</div>
+            <div class="routes-list" id="routes-list">
+                <div class="loading-spinner"></div>
             </div>
         </div>
 
-        <!-- Station Selector Modal -->
-        <div id="station-modal" class="modal-overlay hidden">
-            <div class="modal-content glass-panel">
-                <div class="modal-header">
-                    <h3>Select Station</h3>
-                    <button id="close-modal" class="close-btn">✕</button>
-                </div>
-                <input type="text" id="station-search" class="station-search" placeholder="Search stations...">
-                <div class="station-list" id="station-list">
-                    <!-- Station items will be injected here -->
-                </div>
+        <!-- Simplified Footer (Inside Arrivals or removed? User requested citymapper style which usually has bottom nav, but 60/40 implies list goes to bottom. I will keep a minimal footer inside the panel if needed, or remove if distinct "Get Me Home" buttons are preferred. For now, hiding the old footer as it conflicts with the bottom sheet concept.) -->
+
+        <!-- Version Footer -->
+        <div class="version-footer">
+            <div class="version-text">Wsal El Bus 1.10a</div>
+            <div class="tagline">Made with ❤️ for Algiers commuters</div>
+        </div>
+    </div>
+
+    <!-- Station Selector Modal -->
+    <div id="station-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Select Station</h3>
+                <button id="close-modal" class="close-btn">✕</button>
+            </div>
+            <input type="text" id="station-search" class="station-search" placeholder="Search stations...">
+            <div class="station-list" id="station-list">
+                <!-- Station items will be injected here -->
             </div>
         </div>
+    </div>
 
-        <!-- Install Instructions Modal -->
-        <div id="install-modal" class="install-modal hidden">
-            <div class="install-modal-content">
-                <div class="install-modal-header">
-                    <h3>📱 Install Wsal El Bus</h3>
-                    <button id="close-install-modal" class="install-modal-close">✕</button>
-                </div>
-
-                <div id="install-instructions" class="install-instructions">
-                    <!-- Instructions will be dynamically inserted based on browser -->
-                </div>
-
-                <button id="install-now-btn" class="install-now-btn hidden">Install Now</button>
+    <!-- Install Instructions Modal -->
+    <div id="install-modal" class="install-modal hidden">
+        <div class="install-modal-content">
+            <div class="install-modal-header">
+                <h3>📱 Install Wsal El Bus</h3>
+                <button id="close-install-modal" class="install-modal-close">✕</button>
             </div>
+
+            <div id="install-instructions" class="install-instructions">
+                <!-- Instructions will be dynamically inserted based on browser -->
+            </div>
+
+            <button id="install-now-btn" class="install-now-btn hidden">Install Now</button>
         </div>
+    </div>
 
-        <!-- Scripts -->
-        <script src="./leaflet.js"></script>
-        <script src="./tile-cache.js"></script>
-        <script src="./weather.js"></script>
-        <script src="./app.js"></script>
+    <!-- Scripts -->
+    <script src="./leaflet.js"></script>
+    <script src="./tile-cache.js"></script>
+    <script src="./weather.js"></script>
+    <script src="./app.js"></script>
 
-        <!-- Service Worker Registration for Tile Caching -->
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./service-worker.js')
-                        .then(registration => {
-                            console.log('✅ Service Worker registered for tile caching:', registration.scope);
-                            // Force update to get new version
-                            registration.update();
-                        })
-                        .catch(error => {
-                            console.log('❌ Service Worker registration failed:', error);
-                        });
-                });
-            }
-        </script>
+    <!-- Service Worker Registration for Tile Caching -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered for tile caching:', registration.scope);
+                        // Force update to get new version
+                        registration.update();
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 
-        <!-- Service Worker Registration -->
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./service-worker.js')
-                        .then(registration => {
-                            console.log('ServiceWorker registered:', registration.scope);
-                        })
-                        .catch(err => {
-                            console.log('ServiceWorker registration failed:', err);
-                        });
-                });
-            }
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
 
-            // Universal Install System - Works on ALL browsers
-            let deferredPrompt;
-            const universalInstallBtn = document.getElementById('universal-install-btn');
-            const installModal = document.getElementById('install-modal');
-            const closeInstallModal = document.getElementById('close-install-modal');
-            const installInstructions = document.getElementById('install-instructions');
-            const installNowBtn = document.getElementById('install-now-btn');
+        // Universal Install System - Works on ALL browsers
+        let deferredPrompt;
+        const universalInstallBtn = document.getElementById('universal-install-btn');
+        const installModal = document.getElementById('install-modal');
+        const closeInstallModal = document.getElementById('close-install-modal');
+        const installInstructions = document.getElementById('install-instructions');
+        const installNowBtn = document.getElementById('install-now-btn');
 
-            // Detect browser and device
-            function detectBrowserAndDevice() {
-                const ua = navigator.userAgent;
-                const isAndroid = /Android/i.test(ua);
-                const isIOS = /iPhone|iPad|iPod/i.test(ua);
-                const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
-                const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
-                const isFirefox = /Firefox/i.test(ua);
-                const isMobile = isAndroid || isIOS;
+        // Detect browser and device
+        function detectBrowserAndDevice() {
+            const ua = navigator.userAgent;
+            const isAndroid = /Android/i.test(ua);
+            const isIOS = /iPhone|iPad|iPod/i.test(ua);
+            const isChrome = /Chrome/i.test(ua) && !/Edg/i.test(ua);
+            const isSafari = /Safari/i.test(ua) && !/Chrome/i.test(ua);
+            const isFirefox = /Firefox/i.test(ua);
+            const isMobile = isAndroid || isIOS;
 
-                return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
-            }
+            return { isAndroid, isIOS, isChrome, isSafari, isFirefox, isMobile };
+        }
 
-            // Check if desktop - hide button initially, let Chrome show its banner
-            const { isMobile } = detectBrowserAndDevice();
-            if (!isMobile) {
-                universalInstallBtn.classList.add('hidden');
-            }
+        // Check if desktop - hide button initially, let Chrome show its banner
+        const { isMobile } = detectBrowserAndDevice();
+        if (!isMobile) {
+            universalInstallBtn.classList.add('hidden');
+        }
 
-            // Generate install instructions based on browser
-            function getInstallInstructions() {
-                const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
+        // Generate install instructions based on browser
+        function getInstallInstructions() {
+            const { isAndroid, isIOS, isChrome, isSafari, isMobile } = detectBrowserAndDevice();
 
-                if (isIOS && isSafari) {
-                    return `
+            if (isIOS && isSafari) {
+                return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>Share</strong> button <span class="browser-badge">⬆️</span> at the bottom</span>
@@ -259,8 +237,8 @@
                         <span class="install-step-text">Tap <strong>"Add"</strong> in the top right</span>
                     </div>
                 `;
-                } else if (isAndroid && isChrome) {
-                    return `
+            } else if (isAndroid && isChrome) {
+                return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span> in the top right</span>
@@ -274,12 +252,12 @@
                         <span class="install-step-text">Tap <strong>"Add"</strong> to create the app shortcut</span>
                     </div>
                 `;
-                } else if (isAndroid) {
-                    // Check if it's Android Go (low RAM device)
-                    const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
+            } else if (isAndroid) {
+                // Check if it's Android Go (low RAM device)
+                const isLowRAM = navigator.deviceMemory && navigator.deviceMemory <= 2;
 
-                    if (isLowRAM) {
-                        return `
+                if (isLowRAM) {
+                    return `
                         <div class="install-step">
                             <span class="install-step-text" style="color: var(--accent-color); margin-bottom: 10px; display: block;">
                                 <strong>📱 Your device uses Android Go Edition</strong>
@@ -298,9 +276,9 @@
                             <span class="install-step-text">Access from bookmarks anytime - works offline!</span>
                         </div>
                     `;
-                    }
+                }
 
-                    return `
+                return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Tap the <strong>menu</strong> button <span class="browser-badge">⋮</span></span>
@@ -314,9 +292,9 @@
                         <span class="install-step-text">Confirm to add the shortcut</span>
                     </div>
                 `;
-                } else {
-                    // Desktop
-                    return `
+            } else {
+                // Desktop
+                return `
                     <div class="install-step">
                         <span class="install-step-number">1</span>
                         <span class="install-step-text">Look for the <strong>install icon</strong> <span class="browser-badge">⊕</span> in the address bar</span>
@@ -326,70 +304,70 @@
                         <span class="install-step-text">Or click the button below to install directly</span>
                     </div>
                 `;
-                }
+            }
+        }
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('🎉 beforeinstallprompt event fired!');
+            deferredPrompt = e;
+
+            // Desktop: Don't prevent default - let Chrome show its banner
+            // Mobile: Show our custom button since native options may be limited
+            if (isMobile) {
+                e.preventDefault();
+                universalInstallBtn.classList.remove('hidden');
             }
 
-            // Listen for beforeinstallprompt event
-            window.addEventListener('beforeinstallprompt', (e) => {
-                console.log('🎉 beforeinstallprompt event fired!');
-                deferredPrompt = e;
+            // Show the "Install Now" button in modal for both
+            installNowBtn.classList.remove('hidden');
+        });
 
-                // Desktop: Don't prevent default - let Chrome show its banner
-                // Mobile: Show our custom button since native options may be limited
-                if (isMobile) {
-                    e.preventDefault();
-                    universalInstallBtn.classList.remove('hidden');
-                }
+        // Universal install button click
+        universalInstallBtn.addEventListener('click', () => {
+            installInstructions.innerHTML = getInstallInstructions();
+            installModal.classList.remove('hidden');
+        });
 
-                // Show the "Install Now" button in modal for both
-                installNowBtn.classList.remove('hidden');
-            });
+        // Close modal
+        closeInstallModal.addEventListener('click', () => {
+            installModal.classList.add('hidden');
+        });
 
-            // Universal install button click
-            universalInstallBtn.addEventListener('click', () => {
-                installInstructions.innerHTML = getInstallInstructions();
-                installModal.classList.remove('hidden');
-            });
-
-            // Close modal
-            closeInstallModal.addEventListener('click', () => {
+        // Click outside modal to close
+        installModal.addEventListener('click', (e) => {
+            if (e.target === installModal) {
                 installModal.classList.add('hidden');
-            });
+            }
+        });
 
-            // Click outside modal to close
-            installModal.addEventListener('click', (e) => {
-                if (e.target === installModal) {
+        // Install Now button (only shows if beforeinstallprompt fired)
+        installNowBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                if (outcome === 'accepted') {
                     installModal.classList.add('hidden');
                 }
-            });
-
-            // Install Now button (only shows if beforeinstallprompt fired)
-            installNowBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`User response: ${outcome}`);
-                    if (outcome === 'accepted') {
-                        installModal.classList.add('hidden');
-                    }
-                    deferredPrompt = null;
-                }
-            });
-
-            // Log when app is installed
-            window.addEventListener('appinstalled', () => {
-                console.log('✅ PWA was installed successfully');
-                universalInstallBtn.classList.add('hidden');
-                installModal.classList.add('hidden');
-            });
-
-            // Check if app is already installed (on page load)
-            if (window.matchMedia('(display-mode: standalone)').matches ||
-                window.navigator.standalone === true) {
-                console.log('✅ App is running in standalone mode (already installed)');
-                universalInstallBtn.classList.add('hidden');
+                deferredPrompt = null;
             }
-        </script>
+        });
+
+        // Log when app is installed
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA was installed successfully');
+            universalInstallBtn.classList.add('hidden');
+            installModal.classList.add('hidden');
+        });
+
+        // Check if app is already installed (on page load)
+        if (window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true) {
+            console.log('✅ App is running in standalone mode (already installed)');
+            universalInstallBtn.classList.add('hidden');
+        }
+    </script>
 </body>
 
 </html>

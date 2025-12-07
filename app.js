@@ -895,65 +895,6 @@ if (mapViewContainer && arrivalsPanel) {
     });
 }
 
-// Swipe Gesture on Floating Bar - Pull down to expand, pull up to collapse
-const floatingControls = document.querySelector('.floating-controls');
-
-if (floatingControls && mapViewContainer && arrivalsPanel) {
-    let touchStartY = 0;
-    let touchEndY = 0;
-    let isSwiping = false;
-
-    floatingControls.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-        isSwiping = true;
-    });
-
-    floatingControls.addEventListener('touchmove', (e) => {
-        if (isSwiping) {
-            e.preventDefault(); // Prevent page scroll
-        }
-    }, { passive: false });
-
-    floatingControls.addEventListener('touchend', (e) => {
-        if (!isSwiping) return;
-        touchEndY = e.changedTouches[0].clientY;
-        handleSwipe();
-        isSwiping = false;
-    });
-
-    function handleSwipe() {
-        const swipeDistance = touchEndY - touchStartY;
-        const minSwipeDistance = 30; // Minimum pixels to trigger
-
-        // Swipe down - expand map
-        if (swipeDistance > minSwipeDistance) {
-            if (!mapViewContainer.classList.contains('expanded')) {
-                mapViewContainer.classList.add('expanded');
-                arrivalsPanel.classList.add('collapsed');
-
-                setTimeout(() => {
-                    if (map) map.invalidateSize();
-                }, 300);
-            }
-        }
-        // Swipe up - collapse map
-        else if (swipeDistance < -minSwipeDistance) {
-            if (mapViewContainer.classList.contains('expanded')) {
-                mapViewContainer.classList.remove('expanded');
-                arrivalsPanel.classList.remove('collapsed');
-
-                setTimeout(() => {
-                    if (map) map.invalidateSize();
-                }, 300);
-            }
-        }
-    }
-}
-
-// Init
-initMap(); // Initialize map immediately (background)
-initGeolocation();
-
 // Initialize weather module (handles its own display updates)
 if (window.WeatherModule) {
     WeatherModule.init();

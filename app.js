@@ -880,28 +880,3 @@ if (window.WeatherModule) {
 
 // Refresh arrivals every minute
 setInterval(() => renderRoutes(currentStation), 60000);
-
-// ===== PREVENT PULL-TO-REFRESH =====
-// This is the standard solution to disable pull-to-refresh on mobile browsers
-let lastTouchY = 0;
-let preventPullToRefresh = false;
-
-document.body.addEventListener('touchstart', (e) => {
-    if (e.touches.length !== 1) return;
-    lastTouchY = e.touches[0].clientY;
-
-    // Check if we're at the top of the scrollable area
-    const scrollableElement = document.querySelector('.arrivals-panel');
-    preventPullToRefresh = scrollableElement && scrollableElement.scrollTop === 0;
-}, { passive: false });
-
-document.body.addEventListener('touchmove', (e) => {
-    const touchY = e.touches[0].clientY;
-    const touchYDelta = touchY - lastTouchY;
-    lastTouchY = touchY;
-
-    // If pulling down when already at top, prevent default
-    if (preventPullToRefresh && touchYDelta > 0) {
-        e.preventDefault();
-    }
-}, { passive: false });

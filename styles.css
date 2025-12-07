@@ -253,6 +253,14 @@ body {
     margin-bottom: -40px;
     /* Compensate for overlap into panel */
     z-index: 200;
+    touch-action: none;
+    /* Prevent page scroll, handle gestures manually */
+    cursor: grab;
+    /* Indicate draggable */
+}
+
+.floating-controls:active {
+    cursor: grabbing;
 }
 
 .station-selector-card {

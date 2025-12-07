@@ -159,6 +159,8 @@ let mapInitialized = false;
 let currentStation = null; // Will be set after STATIONS is defined
 let userLat = null;
 let userLon = null;
+let userHeading = 0; // Device orientation in degrees
+let appMode = null; // null (initial), 'bus', or 'walk'
 
 // --- DOM Elements ---
 const stationSelectorTrigger = document.getElementById('station-selector-trigger');
@@ -828,6 +830,19 @@ function updateMap() {
         // No user location, just center on station
         map.setView([station.lat, station.lon], 15);
         mapDistanceEl.textContent = '📍 Location unavailable';
+    }
+}
+
+// Update user marker rotation based on device heading
+function updateUserMarker() {
+    if (userMarker && map) {
+        const icon = userMarker.getElement();
+        if (icon) {
+            const svg = icon.querySelector('svg');
+            if (svg) {
+                svg.style.transform = `rotate(${userHeading}deg)`;
+            }
+        }
     }
 }
 

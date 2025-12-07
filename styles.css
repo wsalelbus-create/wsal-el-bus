@@ -240,6 +240,21 @@ body {
 }
 
 
+/* =========================================
+   2. FLOATING CONTROLS (Between Map & Arrivals)
+   ========================================= */
+.floating-controls {
+    position: relative;
+    /* In document flow, not overlapping */
+    width: 100%;
+    padding: 0 16px;
+    margin-top: -80px;
+    /* Pull up to overlap map (40px) and panel (40px) */
+    margin-bottom: -40px;
+    /* Compensate for overlap into panel */
+    z-index: 200;
+}
+
 .station-selector-card {
     background: white;
     border-radius: 16px;

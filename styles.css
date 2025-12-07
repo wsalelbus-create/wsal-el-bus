@@ -60,6 +60,8 @@ body {
     /* Ensure minimum height for map */
     z-index: 1;
     overflow: hidden;
+    padding-bottom: 40px;
+    /* Extend map down - bar will overlap this */
 }
 
 #map-container {
@@ -233,10 +235,10 @@ body {
     /* In document flow, not overlapping */
     width: 100%;
     padding: 0 16px;
-    margin-top: -40px;
-    /* Overlap bar halfway */
-    margin-bottom: 16px;
-    /* Space before arrivals */
+    margin-top: -80px;
+    /* Pull up to overlap map (40px) and panel (40px) */
+    margin-bottom: -40px;
+    /* Compensate for overlap into panel */
     z-index: 200;
 }
 
@@ -314,7 +316,8 @@ body {
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
     z-index: 100;
     padding: 16px;
-    /* Reduced padding - no handle */
+    padding-top: 56px;
+    /* Space for overlapping bar */
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
     /* Safe area for bottom */
     overflow-y: auto;

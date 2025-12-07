@@ -901,15 +901,25 @@ const floatingControls = document.querySelector('.floating-controls');
 if (floatingControls && mapViewContainer && arrivalsPanel) {
     let touchStartY = 0;
     let touchEndY = 0;
+    let isSwiping = false;
 
     floatingControls.addEventListener('touchstart', (e) => {
         touchStartY = e.touches[0].clientY;
-    }, { passive: true });
+        isSwiping = true;
+    });
+
+    floatingControls.addEventListener('touchmove', (e) => {
+        if (isSwiping) {
+            e.preventDefault(); // Prevent page scroll
+        }
+    }, { passive: false });
 
     floatingControls.addEventListener('touchend', (e) => {
+        if (!isSwiping) return;
         touchEndY = e.changedTouches[0].clientY;
         handleSwipe();
-    }, { passive: true });
+        isSwiping = false;
+    });
 
     function handleSwipe() {
         const swipeDistance = touchEndY - touchStartY;

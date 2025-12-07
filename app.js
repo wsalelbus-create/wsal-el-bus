@@ -895,6 +895,51 @@ if (mapViewContainer && arrivalsPanel) {
     });
 }
 
+// Swipe Gesture on Floating Bar - Pull down to expand, pull up to collapse
+const floatingControls = document.querySelector('.floating-controls');
+
+if (floatingControls && mapViewContainer && arrivalsPanel) {
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    floatingControls.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    floatingControls.addEventListener('touchend', (e) => {
+        touchEndY = e.changedTouches[0].clientY;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const swipeDistance = touchEndY - touchStartY;
+        const minSwipeDistance = 30; // Minimum pixels to trigger
+
+        // Swipe down - expand map
+        if (swipeDistance > minSwipeDistance) {
+            if (!mapViewContainer.classList.contains('expanded')) {
+                mapViewContainer.classList.add('expanded');
+                arrivalsPanel.classList.add('collapsed');
+
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                }, 300);
+            }
+        }
+        // Swipe up - collapse map
+        else if (swipeDistance < -minSwipeDistance) {
+            if (mapViewContainer.classList.contains('expanded')) {
+                mapViewContainer.classList.remove('expanded');
+                arrivalsPanel.classList.remove('collapsed');
+
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                }, 300);
+            }
+        }
+    }
+}
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

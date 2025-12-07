@@ -3,160 +3,92 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Panel Swipe Test v3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swipe Test</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
         body {
-            height: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        .map {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            font-family: sans-serif;
-        }
-
-        /* Panel uses HEIGHT not FLEX for Safari compatibility */
-        .panel {
-            height: 40vh;
-            /* 40% of viewport height */
+        .test-bar {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
             background: white;
-            border-radius: 24px 24px 0 0;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            transition: height 0.3s ease;
-            position: relative;
-        }
-
-        .panel.collapsed {
-            height: 20vh;
-            /* 20% when collapsed */
-        }
-
-        .drag-zone {
-            padding: 15px;
-            background: white;
-            border-radius: 24px 24px 0 0;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             touch-action: none;
             cursor: grab;
-            flex-shrink: 0;
+            text-align: center;
         }
 
-        .handle {
-            width: 40px;
-            height: 5px;
-            background: #ccc;
-            border-radius: 3px;
-            margin: 0 auto;
+        .test-bar:active {
+            cursor: grabbing;
         }
 
-        .scroll-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 20px 20px 20px;
-            overscroll-behavior-y: contain;
-        }
-
-        .status {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-family: monospace;
-            font-size: 12px;
-        }
-
-        .item {
-            background: #fff;
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="map" id="map">
-            <span>MAP AREA (expands when panel collapses)</span>
-        </div>
-        <div class="panel" id="panel">
-            <div class="drag-zone" id="dragZone">
-                <div class="handle"></div>
-            </div>
-            <div class="scroll-content">
-                <div class="status" id="status">
-                    Swipe down on gray bar to collapse<br>
-                    Swipe up to expand
-                </div>
-                <div class="item">Bus Route 1 - 5 min</div>
-                <div class="item">Bus Route 2 - 8 min</div>
-                <div class="item">Bus Route 3 - 12 min</div>
-            </div>
-        </div>
+    <div class="test-bar" id="testBar">
+        <h2>Swipe Test</h2>
+        <p>Swipe up or down on this card</p>
+        <div id="status">Waiting for swipe...</div>
     </div>
 
     <script>
-        const panel = document.getElementById('panel');
-        const dragZone = document.getElementById('dragZone');
+        const testBar = document.getElementById('testBar');
         const status = document.getElementById('status');
-        let startY = 0;
-        let isCollapsed = false;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let isSwiping = false;
 
-        function log(msg) {
-            status.innerHTML = msg;
-        }
+        testBar.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            isSwiping = true;
+            status.textContent = `Touch start: ${touchStartY}px`;
+            status.style.background = '#e3f2fd';
+        });
 
-        log('✅ Ready - Swipe the gray bar');
-
-        dragZone.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-            log('👆 Touch started');
-        }, { passive: false });
-
-        dragZone.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const currentY = e.touches[0].clientY;
-            const deltaY = currentY - startY;
-
-            if (deltaY > 60 && !isCollapsed) {
-                panel.classList.add('collapsed');
-                isCollapsed = true;
-                log('📉 COLLAPSED! Panel height: ' + panel.offsetHeight + 'px');
-            }
-
-            if (deltaY < -40 && isCollapsed) {
-                panel.classList.remove('collapsed');
-                isCollapsed = false;
-                log('📈 EXPANDED! Panel height: ' + panel.offsetHeight + 'px');
+        testBar.addEventListener('touchmove', (e) => {
+            if (isSwiping) {
+                e.preventDefault();
+                const currentY = e.touches[0].clientY;
+                const distance = currentY - touchStartY;
+                status.textContent = `Moving: ${distance}px`;
+                status.style.background = '#fff3e0';
             }
         }, { passive: false });
 
-        dragZone.addEventListener('touchend', () => {
-            log(isCollapsed ? '✅ Collapsed (20vh)' : '✅ Expanded (40vh)');
+        testBar.addEventListener('touchend', (e) => {
+            if (!isSwiping) return;
+
+            touchEndY = e.changedTouches[0].clientY;
+            const swipeDistance = touchEndY - touchStartY;
+
+            if (swipeDistance > 30) {
+                status.textContent = `✅ SWIPE DOWN: ${swipeDistance}px`;
+                status.style.background = '#c8e6c9';
+            } else if (swipeDistance < -30) {
+                status.textContent = `✅ SWIPE UP: ${swipeDistance}px`;
+                status.style.background = '#ffcdd2';
+            } else {
+                status.textContent = `❌ Too small: ${swipeDistance}px`;
+                status.style.background = '#f0f0f0';
+            }
+
+            isSwiping = false;
         });
     </script>
 </body>

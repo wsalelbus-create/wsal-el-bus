@@ -481,23 +481,21 @@ function calculateArrivals(station) {
 
 // --- UI Updates ---
 function renderStation(station) {
-    // Only render if in bus mode
-    if (appMode !== 'bus') {
-        return;
-    }
-
-    // Update Floating Badge
+    // 1. Always update Floating Badge (Station Name)
     const stationNameEl = document.getElementById('station-name');
     if (stationNameEl) {
         stationNameEl.textContent = station.name;
     }
 
-    // Render Routes
-    renderRoutes(station);
-
-    // Update map (but don't show route line unless in walk mode)
+    // 2. Always update map marker location
+    // (Route line will only draw if appMode === 'walk' due to check inside updateMap)
     if (mapInitialized) {
         updateMap();
+    }
+
+    // 3. Only render routes/arrivals if in BUS mode
+    if (appMode === 'bus') {
+        renderRoutes(station);
     }
 }
 

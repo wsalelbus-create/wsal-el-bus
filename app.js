@@ -506,9 +506,24 @@ function updateWalkingTime(station) {
     const straightLineDistance = getDistanceFromLatLonInKm(userLat, userLon, station.lat, station.lon);
 
     // Apply route factor: actual walking routes in Algiers are ~2x longer than straight-line
-    // This accounts for winding streets, stairs, and detours in hilly urban areas
-    // Calibrated to match Google Maps walking times
     const routeFactor = 2.0;
+    const actualWalkingDistance = straightLineDistance * routeFactor;
+
+    // Average walking speed: 5 km/h
+    const walkingSpeedKmh = 5;
+    const walkingTimeHours = actualWalkingDistance / walkingSpeedKmh;
+    const walkingMinutes = Math.ceil(walkingTimeHours * 60);
+
+    console.log('🚶 Walking Time Calculation:');
+    console.log('  Straight-line distance:', straightLineDistance.toFixed(3), 'km');
+    console.log('  Route factor: 2x');
+    console.log('  Actual walking distance:', actualWalkingDistance.toFixed(3), 'km');
+    console.log('  Walking time:', walkingMinutes, 'minutes');
+
+    // Update walking time badge (compact: icon + number only)
+    if (walkTimeText) {
+        walkTimeText.textContent = `${walkingMinutes}'`; // Just number with apostrophe (minute symbol)
+    }
 }
 
 function renderRoutes(station) {

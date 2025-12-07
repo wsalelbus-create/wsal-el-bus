@@ -26,12 +26,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
-    height: 100%;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-}
+
 
 body {
     font-family: 'Outfit', sans-serif;
@@ -42,11 +37,8 @@ body {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    position: fixed;
-    /* Prevent elastic bounce */
-    /* NO padding on body - fixed elements handle safe area themselves */
-    /* Disable pull-to-refresh on mobile */
-    overscroll-behavior-y: contain;
+    /* Disable elastic bounce and pull-to-refresh */
+    overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -56,10 +48,9 @@ body {
     height: 100vh;
     position: relative;
     background: #e5e5ea;
-    /* Extend behind status bar */
     margin-top: 0;
-    /* Disable pull-to-refresh */
-    overscroll-behavior-y: contain;
+    /* Disable pull-to-refresh and elastic bounce */
+    overscroll-behavior: none;
 }
 
 /* =========================================
@@ -330,10 +321,9 @@ body {
     /* Safe area for bottom */
     overflow-y: auto;
     position: relative;
-    /* Create visual separation from map */
     margin-top: -20px;
-    /* Disable pull-to-refresh when scrolling */
-    overscroll-behavior-y: contain;
+    /* Disable elastic bounce */
+    overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
 }
 

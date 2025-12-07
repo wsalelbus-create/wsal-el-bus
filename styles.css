@@ -91,18 +91,6 @@ body {
     /* Hint browser for optimization */
 }
 
-/* User Location Marker - Directional */
-.user-location-marker {
-    transition: none;
-    /* No transition on marker itself */
-}
-
-.user-location-marker svg {
-    transition: transform 0.3s ease-out;
-    /* Smooth rotation */
-    transform-origin: center;
-}
-
 /* Header Floating on Map */
 .glass-header {
     position: absolute;
@@ -329,60 +317,6 @@ body {
     color: var(--text-muted);
     font-size: 1.2rem;
     padding-left: 10px;
-}
-
-
-/* =========================================
-   MODE TOGGLE BUTTONS (Initial State)
-   ========================================= */
-.mode-toggle-container {
-    position: relative;
-    width: 100%;
-    padding: 24px 16px;
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    z-index: 150;
-}
-
-.mode-btn {
-    background: white;
-    border: 2px solid #e5e5ea;
-    border-radius: 20px;
-    padding: 20px 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s;
-    min-width: 120px;
-}
-
-.mode-btn:active {
-    transform: scale(0.95);
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.mode-btn:active .mode-icon,
-.mode-btn:active .mode-label {
-    filter: grayscale(100%) brightness(200%);
-}
-
-.mode-icon {
-    font-size: 2.5rem;
-}
-
-.mode-label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--text-main);
-}
-
-.hidden {
-    display: none !important;
 }
 
 
@@ -669,7 +603,7 @@ body {
     }
 
     50% {
-        transform: scale(1.05);
+        transform: scale(1.1);
         opacity: 0.8;
     }
 
@@ -677,6 +611,157 @@ body {
         transform: scale(1);
         opacity: 1;
     }
+}
+
+/* =========================================
+   5. MODE TOGGLE (Citymapper Style)
+   ========================================= */
+.mode-toggle-container {
+    position: fixed;
+    /* Fixed relative to viewport */
+    bottom: calc(40px + env(safe-area-inset-bottom));
+    /* Position from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    background: white;
+    border: 2px solid white;
+    /* Clean white look */
+    border-radius: 20px;
+    /* Rounded card shape */
+    padding: 12px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    /* Strong shadow for float */
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Bouncy pop */
+    min-width: 90px;
+}
+
+.mode-btn:active {
+    transform: scale(0.92);
+}
+
+.mode-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: #f2f2f7;
+    /* Light gray circle bg */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.mode-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.mode-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+/* Helper Class */
+.hidden {
+    display: none !important;
+}
+
+/* =========================================
+   5. MODE TOGGLE (Citymapper Style)
+   ========================================= */
+.mode-toggle-container {
+    position: fixed;
+    /* Fixed relative to viewport */
+    bottom: calc(40px + env(safe-area-inset-bottom));
+    /* Position from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    background: white;
+    border: 2px solid white;
+    /* Clean white look */
+    border-radius: 20px;
+    /* Rounded card shape */
+    padding: 12px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    /* Strong shadow for float */
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Bouncy pop */
+    min-width: 90px;
+}
+
+.mode-btn:active {
+    transform: scale(0.92);
+}
+
+.mode-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: #f2f2f7;
+    /* Light gray circle bg */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.mode-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.mode-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+/* Helper Class */
+.hidden {
+    display: none !important;
+}
+
+transform: scale(1);
+opacity: 1;
+}
+
+50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+100% {
+    transform: scale(1);
+    opacity: 1;
+}
 }
 
 .loading-spinner {

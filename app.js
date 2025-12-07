@@ -159,8 +159,6 @@ let mapInitialized = false;
 let currentStation = null; // Will be set after STATIONS is defined
 let userLat = null;
 let userLon = null;
-let userHeading = 0; // Device orientation in degrees
-let appMode = null; // null (initial), 'bus', or 'walk'
 
 // --- DOM Elements ---
 const stationSelectorTrigger = document.getElementById('station-selector-trigger');
@@ -481,21 +479,18 @@ function calculateArrivals(station) {
 
 // --- UI Updates ---
 function renderStation(station) {
-    // 1. Always update Floating Badge (Station Name)
-    const stationNameEl = document.getElementById('station-name');
-    if (stationNameEl) {
-        stationNameEl.textContent = station.name;
-    }
+    // Update Floating Badge
+    stationNameEl.textContent = station.name;
 
-    // 2. Always update map marker location
-    // (Route line will only draw if appMode === 'walk' due to check inside updateMap)
+    // Update walking time
+    updateWalkingTime(station);
+
+    // Render Routes
+    renderRoutes(station);
+
+    // Update map
     if (mapInitialized) {
         updateMap();
-    }
-
-    // 3. Only render routes/arrivals if in BUS mode
-    if (appMode === 'bus') {
-        renderRoutes(station);
     }
 }
 
@@ -780,42 +775,29 @@ function updateMap() {
 
     // If we have user location, add user marker and draw line
     if (userLat && userLon) {
-        // Add directional user marker (blue dot with direction cone)
-        userMarker = L.marker([userLat, userLon], {
+        // Add user marker
+        const userMarker = L.marker([userLat, userLon], {
             icon: L.divIcon({
-                className: 'user-location-marker',
-                html: `
-                    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${userHeading}deg);">
-                        <!-- Direction cone/wedge -->
-                        <path d="M 20 20 L 15 5 A 15 15 0 0 1 25 5 Z" fill="#4A90E2" opacity="0.3"/>
-                        <!-- Blue circle (user location) -->
-                        <circle cx="20" cy="20" r="8" fill="#4A90E2" stroke="white" stroke-width="3"/>
-                        <!-- Inner white dot -->
-                        <circle cx="20" cy="20" r="3" fill="white"/>
-                    </svg>
-                `,
-                iconSize: [40, 40],
-                iconAnchor: [20, 20]
-            }),
-            rotationAngle: userHeading,
-            rotationOrigin: 'center'
+                className: 'custom-marker',
+                html: '<div style="background: #ff0055; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            })
         }).addTo(map);
 
-        // Draw dashed blue line between user and station (walking route) - ONLY in walk mode
-        if (appMode === 'walk') {
-            const latlngs = [
-                [userLat, userLon],
-                [station.lat, station.lon]
-            ];
+        // Draw dashed blue line between user and station (walking route)
+        const latlngs = [
+            [userLat, userLon],
+            [station.lat, station.lon]
+        ];
 
-            L.polyline(latlngs, {
-                color: '#00d2ff',
-                weight: 4,
-                opacity: 0.7,
-                dashArray: '10, 10', // Dashed line pattern
-                lineCap: 'round'
-            }).addTo(map);
-        }
+        L.polyline(latlngs, {
+            color: '#00d2ff',
+            weight: 4,
+            opacity: 0.7,
+            dashArray: '10, 10', // Dashed line pattern
+            lineCap: 'round'
+        }).addTo(map);
 
         // Calculate and display distance
         const distance = getDistanceFromLatLonInKm(userLat, userLon, station.lat, station.lon);
@@ -828,19 +810,6 @@ function updateMap() {
         // No user location, just center on station
         map.setView([station.lat, station.lon], 15);
         mapDistanceEl.textContent = '📍 Location unavailable';
-    }
-}
-
-// Update user marker rotation based on device heading
-function updateUserMarker() {
-    if (userMarker && map) {
-        const icon = userMarker.getElement();
-        if (icon) {
-            const svg = icon.querySelector('svg');
-            if (svg) {
-                svg.style.transform = `rotate(${userHeading}deg)`;
-            }
-        }
     }
 }
 
@@ -918,58 +887,6 @@ if (mapViewContainer && arrivalsPanel) {
         }, 300);
     });
 }
-
-// Device Orientation for User Direction
-if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', (event) => {
-        // event.alpha is compass heading (0-360)
-        if (event.alpha !== null) {
-            userHeading = event.alpha;
-            // Update user marker rotation if exists
-            if (userMarker && map) {
-                updateUserMarker();
-            }
-        }
-    });
-}
-
-// Mode Toggle Buttons
-const busModeBtn = document.getElementById('bus-mode-btn');
-const walkModeBtn = document.getElementById('walk-mode-btn');
-const modeToggleContainer = document.getElementById('mode-toggle-container');
-const arrivalsPanel = document.querySelector('.arrivals-panel');
-const walkingBadge = document.querySelector('.walking-time-badge');
-
-busModeBtn.addEventListener('click', () => {
-    appMode = 'bus';
-
-    // Hide mode toggle
-    modeToggleContainer.classList.add('hidden');
-
-    // Show arrivals panel
-    arrivalsPanel.classList.remove('hidden');
-
-    // Render station data
-    renderStation(currentStation);
-});
-
-walkModeBtn.addEventListener('click', () => {
-    appMode = 'walk';
-
-    // Hide mode toggle
-    modeToggleContainer.classList.add('hidden');
-
-    // Show walking badge
-    walkingBadge.classList.remove('hidden');
-
-    // Update walking time
-    updateWalkingTime(currentStation);
-
-    // Show route line on map
-    if (mapInitialized) {
-        updateMap();
-    }
-});
 
 // Init
 initMap(); // Initialize map immediately (background)

@@ -869,6 +869,32 @@ if (compassBtn) {
     });
 }
 
+// Map Expansion Toggle - Click map to expand/collapse
+const mapViewContainer = document.querySelector('.map-view-container');
+const arrivalsPanel = document.querySelector('.arrivals-panel');
+
+if (mapViewContainer && arrivalsPanel) {
+    mapViewContainer.addEventListener('click', (e) => {
+        // Don't toggle if clicking on controls
+        if (e.target.closest('.glass-header') ||
+            e.target.closest('.walking-time-badge') ||
+            e.target.closest('.map-controls-stack')) {
+            return;
+        }
+
+        // Toggle expanded state
+        mapViewContainer.classList.toggle('expanded');
+        arrivalsPanel.classList.toggle('collapsed');
+
+        // Invalidate map size after transition
+        setTimeout(() => {
+            if (map) {
+                map.invalidateSize();
+            }
+        }, 300);
+    });
+}
+
 // Init
 initMap(); // Initialize map immediately (background)
 initGeolocation();

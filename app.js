@@ -895,6 +895,61 @@ if (mapViewContainer && arrivalsPanel) {
     });
 }
 
+// Swipe Gesture on Floating Bar - Pull down to expand, pull up to collapse
+const floatingControls = document.querySelector('.floating-controls');
+
+if (floatingControls && mapViewContainer && arrivalsPanel) {
+    let touchStartY = 0;
+    let currentY = 0;
+    let isSwiping = false;
+    const minSwipeDistance = 20; // Reduced for faster response
+
+    floatingControls.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        currentY = touchStartY;
+        isSwiping = true;
+    }, { passive: true });
+
+    floatingControls.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+
+        currentY = e.touches[0].clientY;
+        const swipeDistance = currentY - touchStartY;
+
+        // Immediate visual feedback - trigger expansion/collapse during swipe
+        if (Math.abs(swipeDistance) > minSwipeDistance) {
+            if (swipeDistance > 0) {
+                // Swiping down - expand
+                if (!mapViewContainer.classList.contains('expanded')) {
+                    mapViewContainer.classList.add('expanded');
+                    arrivalsPanel.classList.add('collapsed');
+                    setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+                }
+            } else {
+                // Swiping up - collapse
+                if (mapViewContainer.classList.contains('expanded')) {
+                    mapViewContainer.classList.remove('expanded');
+                    arrivalsPanel.classList.remove('collapsed');
+                    setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+                }
+            }
+            isSwiping = false; // Prevent multiple triggers
+        }
+    }, { passive: true });
+
+    floatingControls.addEventListener('touchend', () => {
+        isSwiping = false;
+    }, { passive: true });
+
+    floatingControls.addEventListener('touchcancel', () => {
+        isSwiping = false;
+    }, { passive: true });
+}
+
+// Init
+initMap(); // Initialize map immediately (background)
+initGeolocation();
+
 // Initialize weather module (handles its own display updates)
 if (window.WeatherModule) {
     WeatherModule.init();

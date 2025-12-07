@@ -226,16 +226,16 @@ body {
 
 
 /* =========================================
-   2. FLOATING CONTROLS (Middle Overlap)
+   2. FLOATING CONTROLS (Between Map & Arrivals)
    ========================================= */
 .floating-controls {
-    position: absolute;
-    top: 55%;
-    /* Adjust to overlap map/list boundary */
-    left: 16px;
-    right: 16px;
+    position: relative;
+    /* In document flow, not overlapping */
+    width: 100%;
+    padding: 0 16px;
+    margin-top: -30px;
+    /* Slight overlap for visual connection */
     z-index: 200;
-    transform: translateY(-50%);
 }
 
 .station-selector-card {
@@ -316,8 +316,6 @@ body {
     /* Safe area for bottom */
     overflow-y: auto;
     position: relative;
-    /* Create visual separation from map */
-    margin-top: -20px;
 }
 
 /* Panel Handle */
